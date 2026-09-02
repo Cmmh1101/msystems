@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
     const replyResult = await resend.emails.send({
       from: fromEmail,
       to: email,
-      subject: "Got your message — Montaño Systems",
+      subject: "Got your message — Montano Systems",
       text: `Hi ${name},\n\nThanks for reaching out — got it. I'll be in touch within one business day with next steps.\n\nTalk soon,\nCarla`,
     });
     if (replyResult.error) {

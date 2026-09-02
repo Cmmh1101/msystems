@@ -1,6 +1,6 @@
 export default function HeroDiagram() {
   return (
-    <svg viewBox="0 0 640 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagram showing six disconnected business tools converging into one Montaño Systems node">
+    <svg viewBox="0 0 640 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagram showing six disconnected business tools converging into one Montano Systems node">
       <g stroke="#7FB8D9" strokeWidth="1.2" strokeDasharray="4 4" opacity="0.55" fill="none">
         <line x1="65" y1="50" x2="440" y2="190" />
         <line x1="195" y1="30" x2="440" y2="190" />
@@ -43,7 +43,7 @@ export default function HeroDiagram() {
           ONE SYSTEM
         </text>
         <text x="525" y="204" textAnchor="middle" fontFamily="IBM Plex Mono, monospace" fontSize="10" fill="#D4B483" letterSpacing="1">
-          MONTAÑO SYSTEMS
+          MONTANO SYSTEMS
         </text>
       </g>
 

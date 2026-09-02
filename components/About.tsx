@@ -14,12 +14,9 @@ export default function About() {
           <h2>Built by Carla Montaño</h2>
           <p>
             Carla is a self-taught software engineer who built her own technical career from the ground up —
-            and now brings that same systems thinking to the businesses she works with. Montaño Systems is
+            and now brings that same systems thinking to the businesses she works with. Montano Systems is
             where that experience becomes practical: fewer tools, clearer operations, more of your time back.
           </p>
-          <a href="https://carlamontano.io" className="about-link">
-            More about Carla →
-          </a>
 
           <div className="collab-note">
             <b>A right-sized team, every time.</b> For specialized builds, Carla brings in a small network of

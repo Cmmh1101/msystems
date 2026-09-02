@@ -1,6 +1,6 @@
-# Montaño Systems — marketing site
+# Montano Systems — marketing site
 
-Next.js MVP for Montaño Systems, the new public brand of **In Motion Web Solutions, LLC** (Tennessee). See [`docs/build-guide.md`](docs/build-guide.md) for the full launch plan, account setup, DNS cutover, and Phase 2 roadmap. The original design reference is at [`docs/design-mockup.html`](docs/design-mockup.html).
+Next.js MVP for Montano Systems, the new public brand of **In Motion Web Solutions, LLC** (Tennessee). See [`docs/build-guide.md`](docs/build-guide.md) for the full launch plan, account setup, DNS cutover, and Phase 2 roadmap. The original design reference is at [`docs/design-mockup.html`](docs/design-mockup.html) — note the brand name there still uses "Montaño"; the live site uses the Anglicized "Montano" instead (no ñ), see below.
 
 ## Stack
 
@@ -61,4 +61,4 @@ netlify deploy --prod
 ## Notes
 
 - Content is hardcoded for this MVP — no CMS, no auth, no Moxie/FluentCRM integration (see `docs/build-guide.md` for what's explicitly out of scope today).
-- The footer carries the required DBA legal disclosure: "Montaño Systems is a dba (assumed name) of In Motion Web Solutions, LLC, registered in Tennessee." Keep this accurate — update it if the DBA filing status changes.
+- The footer carries the required DBA legal disclosure: "Montano Systems is a dba (assumed name) of In Motion Web Solutions, LLC, registered in Tennessee." Keep this accurate — update it if the DBA filing status changes, and make sure the TN Form SS-4402 filing uses this same spelling ("Montano", no ñ).

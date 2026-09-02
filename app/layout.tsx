@@ -27,15 +27,15 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://inmotionwebsolution
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "Montaño Systems — Systems architecture for growing businesses",
+  title: "Montano Systems — Systems architecture for growing businesses",
   description:
     "We design the systems, automation, and AI that let your business run on one system instead of twelve tools that don't talk to each other.",
   openGraph: {
-    title: "Montaño Systems — Systems architecture for growing businesses",
+    title: "Montano Systems — Systems architecture for growing businesses",
     description:
       "We design the systems, automation, and AI that let your business run on one system instead of twelve tools that don't talk to each other.",
     url: siteUrl,
-    siteName: "Montaño Systems",
+    siteName: "Montano Systems",
   },
 };
 
