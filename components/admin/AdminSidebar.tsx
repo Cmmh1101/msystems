@@ -2,7 +2,10 @@
 
 import { usePathname, useRouter } from "next/navigation";
 
-const NAV_ITEMS = [{ href: "/admin/contacts", label: "Contacts" }];
+const NAV_ITEMS = [
+  { href: "/admin/contacts", label: "Contacts" },
+  { href: "/admin/blog", label: "Blog" },
+];
 
 export default function AdminSidebar() {
   const pathname = usePathname();
@@ -20,7 +23,7 @@ export default function AdminSidebar() {
         MONTANO <span>SYSTEMS</span>
       </a>
       {NAV_ITEMS.map((item) => (
-        <a key={item.href} href={item.href} className={`admin-nav-link ${pathname === item.href ? "active" : ""}`}>
+        <a key={item.href} href={item.href} className={`admin-nav-link ${pathname.startsWith(item.href) ? "active" : ""}`}>
           {item.label}
         </a>
       ))}

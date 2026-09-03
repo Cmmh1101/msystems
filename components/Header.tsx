@@ -14,6 +14,7 @@ export default function Header() {
         <nav className="nav-links" aria-label="Primary">
           <a href="/#modules">Services</a>
           <a href="/#about">About</a>
+          <a href="/blog">Blog</a>
           <a href="/#cta">Contact</a>
         </nav>
         <div className="nav-cta">
@@ -39,6 +40,9 @@ export default function Header() {
           </a>
           <a href="/#about" onClick={() => setIsMenuOpen(false)}>
             About
+          </a>
+          <a href="/blog" onClick={() => setIsMenuOpen(false)}>
+            Blog
           </a>
           <a href="/#cta" onClick={() => setIsMenuOpen(false)}>
             Contact

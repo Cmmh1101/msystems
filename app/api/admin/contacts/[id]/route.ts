@@ -1,16 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseServer } from "@/lib/supabaseServer";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import { requireAdmin } from "@/lib/adminAuth";
 
 const VALID_STATUSES = ["new", "contacted", "qualified", "won", "lost"];
-
-async function requireAdmin() {
-  const supabase = getSupabaseServer();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  return !!user && user.email === process.env.ADMIN_EMAIL;
-}
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   if (!(await requireAdmin())) {

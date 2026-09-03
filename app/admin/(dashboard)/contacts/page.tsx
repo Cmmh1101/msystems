@@ -2,6 +2,7 @@ import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import ContactsTable, { type Contact } from "@/components/admin/ContactsTable";
 
 export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
 
 export default async function AdminContactsPage() {
   const supabase = getSupabaseAdmin();

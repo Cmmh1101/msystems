@@ -24,7 +24,7 @@ Next.js MVP for Montano Systems, the new public brand of **In Motion Web Solutio
    cp .env.example .env.local
    ```
 
-3. Run the Supabase migrations in order, once each, in the Supabase SQL editor: [`0001_create_contacts.sql`](supabase/migrations/0001_create_contacts.sql), [`0002_diagnostic_and_subscription.sql`](supabase/migrations/0002_diagnostic_and_subscription.sql), then [`0003_admin_contacts_notes.sql`](supabase/migrations/0003_admin_contacts_notes.sql).
+3. Run the Supabase migrations in order, once each, in the Supabase SQL editor: [`0001_create_contacts.sql`](supabase/migrations/0001_create_contacts.sql), [`0002_diagnostic_and_subscription.sql`](supabase/migrations/0002_diagnostic_and_subscription.sql), [`0003_admin_contacts_notes.sql`](supabase/migrations/0003_admin_contacts_notes.sql), then [`0004_create_posts.sql`](supabase/migrations/0004_create_posts.sql).
 
 4. Create the admin user: Supabase Dashboard → **Authentication → Users → Add User**, using the exact email you set as `ADMIN_EMAIL` and a password of your choosing. There's no public signup page — this is the only way an admin account gets created, and only this one email can log into `/admin`.
 
@@ -70,9 +70,13 @@ netlify deploy --prod
 
 ## Admin panel
 
-`/admin` (Contacts CRM live; Blog and GA4 planned — see [`docs/build-guide.md`](docs/build-guide.md) Phase 2). Single-admin auth: Supabase Auth session via `@supabase/ssr`, gated by `middleware.ts` plus a server-side re-check in `app/admin/(dashboard)/layout.tsx` and in every `/api/admin/*` route handler (never trust the middleware redirect alone for actual writes). Only the exact `ADMIN_EMAIL` can access it — there's no signup flow, so the first (and only) admin user must be created manually in the Supabase Dashboard.
+`/admin` (Contacts CRM and blog CMS live; GA4 planned — see [`docs/build-guide.md`](docs/build-guide.md) Phase 2). Single-admin auth: Supabase Auth session via `@supabase/ssr`, gated by `middleware.ts` plus a server-side re-check in `app/admin/(dashboard)/layout.tsx` and in every `/api/admin/*` route handler (never trust the middleware redirect alone for actual writes). Only the exact `ADMIN_EMAIL` can access it — there's no signup flow, so the first (and only) admin user must be created manually in the Supabase Dashboard.
 
 `/admin/contacts` lists every row from `contacts` (both the contact form and diagnostic quiz feed into this same table) with inline status and notes editing, searchable and filterable by status/source. Writes go through `/api/admin/contacts/[id]` using the service_role client — the admin UI never talks to Supabase directly from the browser.
+
+**Caching note:** every page reading `contacts` or `posts` sets both `export const dynamic = "force-dynamic"` *and* `export const fetchCache = "force-no-store"`. The `dynamic` flag alone wasn't enough in testing — the Supabase JS client's underlying `fetch` calls got cached by Next.js's fetch-cache anyway (reproducible even across dev server restarts, since that cache persists in `.next/cache`), serving stale data after a publish/unpublish. `fetchCache = "force-no-store"` is the explicit override that actually fixed it. If you add a new page that reads live data from Supabase, set both.
+
+`/admin/blog` is a Markdown CMS (`posts` table, migration 0004) — list, create, edit, delete, with a Write/Preview toggle rendered via `react-markdown`. Slugs auto-generate from the title (editable) and must be unique. Draft posts (`published: false`) never appear on the public site; `/blog` and `/blog/[slug]` only ever query `published = true`. Publishing sets `published_at` once and leaves it alone on later edits, so post dates don't shift every time you fix a typo.
 
 ## Notes
 

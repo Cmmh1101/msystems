@@ -10,6 +10,7 @@ export default function Footer() {
         <nav className="footer-links" aria-label="Footer">
           <a href="/#modules">Services</a>
           <a href="/#about">About</a>
+          <a href="/blog">Blog</a>
           <a href="/diagnostic">Free Systems Check</a>
           <a href="/#cta">Contact</a>
         </nav>
