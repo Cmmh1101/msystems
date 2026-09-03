@@ -1,6 +1,6 @@
 # Montano Systems — marketing site
 
-Next.js MVP for Montano Systems, the new public brand of **In Motion Web Solutions, LLC** (Tennessee). See [`docs/build-guide.md`](docs/build-guide.md) for the full launch plan, account setup, DNS cutover, and Phase 2 roadmap. The original design reference is at [`docs/design-mockup.html`](docs/design-mockup.html) — note the brand name there still uses "Montaño"; the live site uses the Anglicized "Montano" instead (no ñ), see below.
+Next.js MVP for Montano Systems, the new public brand of **In Motion Web Solutions, LLC** (Tennessee). See [`docs/build-guide.md`](docs/build-guide.md) for the full launch plan, account setup, DNS cutover, and Phase 2 roadmap. The original design reference is at [`docs/design-mockup.html`](docs/design-mockup.html) — note the brand name there still uses "Montaño"; the live site uses the Anglicized "Montano" instead (no ñ), see below. The client portal / PM / Moxie-replacement plan (not yet built) is spec'd out in [`docs/phase-d-client-portal-spec.md`](docs/phase-d-client-portal-spec.md).
 
 ## Stack
 
