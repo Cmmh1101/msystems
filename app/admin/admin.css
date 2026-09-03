@@ -89,6 +89,7 @@
 
 .admin-main {
   flex: 1;
+  min-width: 0;
   padding: 40px 44px;
   max-width: 1200px;
 }
@@ -192,4 +193,44 @@
   padding: 40px;
   text-align: center;
   color: var(--graphite-soft);
+}
+
+@media (max-width: 860px) {
+  .admin-shell {
+    flex-direction: column;
+  }
+  .admin-sidebar {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+  }
+  .admin-sidebar .wordmark {
+    margin-bottom: 0;
+    margin-right: auto;
+  }
+  .admin-sidebar-footer {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 0;
+    margin-left: auto;
+    padding-top: 0;
+    border-top: none;
+  }
+  .admin-main {
+    padding: 24px 20px;
+  }
+}
+
+@media (max-width: 520px) {
+  .admin-filters {
+    flex-direction: column;
+  }
+  .admin-filters input,
+  .admin-filters select {
+    width: 100%;
+    min-width: 0;
+  }
 }
