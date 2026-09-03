@@ -14,7 +14,6 @@ export default function Header() {
         <nav className="nav-links" aria-label="Primary">
           <a href="/#modules">Services</a>
           <a href="/#about">About</a>
-          <a href="/diagnostic">Free Systems Check</a>
           <a href="/#cta">Contact</a>
         </nav>
         <div className="nav-cta">
@@ -40,9 +39,6 @@ export default function Header() {
           </a>
           <a href="/#about" onClick={() => setIsMenuOpen(false)}>
             About
-          </a>
-          <a href="/diagnostic" onClick={() => setIsMenuOpen(false)}>
-            Free Systems Check
           </a>
           <a href="/#cta" onClick={() => setIsMenuOpen(false)}>
             Contact
