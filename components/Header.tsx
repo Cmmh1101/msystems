@@ -18,8 +18,8 @@ export default function Header() {
           <a href="/#cta">Contact</a>
         </nav>
         <div className="nav-cta">
-          <a href="/#cta" className="btn btn-primary" style={{ padding: "10px 18px" }}>
-            Book an audit
+          <a href="/diagnostic" className="btn btn-primary" style={{ padding: "10px 18px" }}>
+            Free systems check
           </a>
           <button
             className="menu-toggle"

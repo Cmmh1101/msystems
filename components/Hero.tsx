@@ -13,11 +13,11 @@ export default function Hero() {
               <em style={{ fontStyle: "normal", color: "var(--line)" }}>one</em>, instead.
             </p>
             <div className="hero-ctas">
-              <a href="#cta" className="btn btn-primary">
-                Book a systems audit
+              <a href="/diagnostic" className="btn btn-primary">
+                Take the free systems check →
               </a>
-              <a href="#modules" className="btn btn-ghost">
-                See how it works
+              <a href="#cta" className="btn btn-ghost">
+                Book a systems audit
               </a>
             </div>
           </div>
