@@ -129,6 +129,7 @@
   }
   .btn-ghost.on-light:hover:not(:disabled) {
     border-color: var(--graphite);
+    color: var(--ink);
   }
 
   /* NAV */
