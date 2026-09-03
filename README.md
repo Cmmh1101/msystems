@@ -24,7 +24,7 @@ Next.js MVP for Montano Systems, the new public brand of **In Motion Web Solutio
    cp .env.example .env.local
    ```
 
-3. Create the Supabase table (run once in the Supabase SQL editor — see `docs/build-guide.md` section 2 for the exact SQL).
+3. Run the Supabase migrations in order, once each, in the Supabase SQL editor: [`0001_create_contacts.sql`](supabase/migrations/0001_create_contacts.sql), then [`0002_diagnostic_and_subscription.sql`](supabase/migrations/0002_diagnostic_and_subscription.sql).
 
 4. Run the dev server:
 
@@ -57,6 +57,12 @@ Or deploy directly from the CLI:
 ```bash
 netlify deploy --prod
 ```
+
+## Free Systems Check (lead-gen quiz)
+
+`/diagnostic` is a 6-question interactive quiz (`components/diagnostic/DiagnosticQuiz.tsx`, questions/scoring in `lib/diagnostic.ts`). Flow: answer questions → email gate → `/api/diagnostic` recomputes the score server-side (never trusts the client score), saves a `contacts` row (source `diagnostic`, tagged `diagnostic-lead`) plus a linked `diagnostic_results` row, emails the report via Resend, and returns the tier so the results screen can render. "Download report" uses the browser's native print-to-PDF (`window.print()` with a print stylesheet) rather than a server-side PDF library — simplest option for the MVP, easy to swap later if you want a branded PDF template.
+
+`/api/unsubscribe?email=...` flips `contacts.subscribed` to `false`. Nothing currently checks that flag before sending — today's emails are all one-time transactional sends (contact confirmation, diagnostic report), not recurring — but it's there as the foundation for the Phase 2 newsletter/sequence work (n8n + Resend Audiences), so that flag can gate future bulk sends.
 
 ## Notes
 

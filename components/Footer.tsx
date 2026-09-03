@@ -4,13 +4,14 @@ export default function Footer() {
   return (
     <footer className="site-footer">
       <div className="container footer-inner">
-        <a href="#" className="wordmark" style={{ fontSize: "15px" }}>
+        <a href="/" className="wordmark" style={{ fontSize: "15px" }}>
           MONTANO <span>SYSTEMS</span>
         </a>
         <nav className="footer-links" aria-label="Footer">
-          <a href="#modules">Services</a>
-          <a href="#about">About</a>
-          <a href="#cta">Contact</a>
+          <a href="/#modules">Services</a>
+          <a href="/#about">About</a>
+          <a href="/diagnostic">Free Systems Check</a>
+          <a href="/#cta">Contact</a>
         </nav>
         <span className="footer-fine">
           © {year} In Motion Web Solutions, LLC — dba Montano Systems

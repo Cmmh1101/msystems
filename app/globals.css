@@ -614,4 +614,201 @@
       margin: 0 auto 10px;
     }
   }
+
+  /* DIAGNOSTIC QUIZ */
+  .diagnostic-section {
+    background: var(--paper-2);
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+  }
+  .diagnostic-container {
+    display: flex;
+    justify-content: center;
+  }
+  .diagnostic-card {
+    background: var(--paper);
+    border: 1px solid rgba(15, 27, 45, 0.1);
+    border-radius: 4px;
+    padding: 44px;
+    max-width: 560px;
+    width: 100%;
+  }
+  .diagnostic-card h2 {
+    font-size: clamp(24px, 2.8vw, 30px);
+    color: var(--ink);
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+  .diagnostic-lede {
+    color: var(--graphite-soft);
+    font-size: 16px;
+    line-height: 1.65;
+    margin-bottom: 28px;
+  }
+
+  .diagnostic-progress {
+    margin-bottom: 32px;
+  }
+  .diagnostic-progress-bar {
+    height: 4px;
+    background: rgba(15, 27, 45, 0.08);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  .diagnostic-progress-fill {
+    height: 100%;
+    background: var(--brass);
+    transition: width 0.25s ease;
+  }
+  .diagnostic-progress-label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--graphite-soft);
+  }
+
+  .diagnostic-prompt {
+    font-size: clamp(19px, 2.2vw, 23px);
+    color: var(--ink);
+    line-height: 1.35;
+    margin-bottom: 24px;
+  }
+
+  .diagnostic-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .diagnostic-option {
+    text-align: left;
+    font-family: var(--font-body);
+    font-size: 15px;
+    color: var(--graphite);
+    background: var(--paper-2);
+    border: 1px solid rgba(15, 27, 45, 0.12);
+    border-radius: 3px;
+    padding: 14px 18px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .diagnostic-option:hover {
+    border-color: var(--brass);
+  }
+  .diagnostic-option.selected {
+    border-color: var(--brass);
+    background: rgba(184, 147, 90, 0.1);
+  }
+  .diagnostic-back {
+    background: none;
+    border: none;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--graphite-soft);
+    cursor: pointer;
+    padding: 0;
+  }
+  .diagnostic-back:hover {
+    color: var(--ink);
+  }
+
+  .form-row-light label {
+    color: var(--graphite-soft);
+  }
+  .form-row-light input {
+    background: var(--paper);
+    border: 1px solid rgba(15, 27, 45, 0.15);
+    color: var(--ink);
+  }
+  .form-row-light input::placeholder {
+    color: rgba(28, 37, 48, 0.4);
+  }
+  .form-row-light input:focus {
+    border-color: var(--brass);
+  }
+
+  .diagnostic-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13.5px;
+    color: var(--graphite-soft);
+    line-height: 1.5;
+    margin: 4px 0 26px;
+    cursor: pointer;
+  }
+  .diagnostic-checkbox input {
+    margin-top: 3px;
+  }
+
+  .diagnostic-retry {
+    background: none;
+    border: none;
+    text-decoration: underline;
+    color: inherit;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .diagnostic-score {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+  .diagnostic-score-num {
+    font-family: var(--font-display);
+    font-size: 56px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .diagnostic-score-max {
+    font-family: var(--font-mono);
+    font-size: 16px;
+    color: var(--graphite-soft);
+  }
+  .diagnostic-tier {
+    font-size: 22px;
+    color: var(--brass);
+    margin-bottom: 18px;
+  }
+  .diagnostic-result-actions {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin: 8px 0 20px;
+  }
+  .diagnostic-sent-note {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--graphite-soft);
+  }
+
+  @media (max-width: 640px) {
+    .diagnostic-card {
+      padding: 32px 24px;
+    }
+  }
+}
+
+@media print {
+  .site-header,
+  .site-footer,
+  .diagnostic-result-actions {
+    display: none !important;
+  }
+  .diagnostic-section {
+    min-height: 0;
+    padding: 0;
+  }
+  .diagnostic-card {
+    border: none;
+    max-width: none;
+    padding: 0;
+  }
 }
