@@ -24,9 +24,11 @@ Next.js MVP for Montano Systems, the new public brand of **In Motion Web Solutio
    cp .env.example .env.local
    ```
 
-3. Run the Supabase migrations in order, once each, in the Supabase SQL editor: [`0001_create_contacts.sql`](supabase/migrations/0001_create_contacts.sql), then [`0002_diagnostic_and_subscription.sql`](supabase/migrations/0002_diagnostic_and_subscription.sql).
+3. Run the Supabase migrations in order, once each, in the Supabase SQL editor: [`0001_create_contacts.sql`](supabase/migrations/0001_create_contacts.sql), [`0002_diagnostic_and_subscription.sql`](supabase/migrations/0002_diagnostic_and_subscription.sql), then [`0003_admin_contacts_notes.sql`](supabase/migrations/0003_admin_contacts_notes.sql).
 
-4. Run the dev server:
+4. Create the admin user: Supabase Dashboard → **Authentication → Users → Add User**, using the exact email you set as `ADMIN_EMAIL` and a password of your choosing. There's no public signup page — this is the only way an admin account gets created, and only this one email can log into `/admin`.
+
+5. Run the dev server:
 
    ```bash
    npm run dev
@@ -42,6 +44,8 @@ Next.js MVP for Montano Systems, the new public brand of **In Motion Web Solutio
 | `RESEND_API_KEY` | Resend API key |
 | `NOTIFY_EMAIL` | Where new-lead notifications are sent |
 | `FROM_EMAIL` | Sending address — must match your verified Resend domain |
+| `SUPABASE_ANON_KEY` | Supabase anon/publishable key, used for the `/admin` login session (safe to expose to the browser — different from the service_role key) |
+| `ADMIN_EMAIL` | The only email allowed to log into `/admin` |
 
 ## Deploy (Netlify)
 
@@ -64,7 +68,13 @@ netlify deploy --prod
 
 `/api/unsubscribe?email=...` flips `contacts.subscribed` to `false`. Nothing currently checks that flag before sending — today's emails are all one-time transactional sends (contact confirmation, diagnostic report), not recurring — but it's there as the foundation for the Phase 2 newsletter/sequence work (n8n + Resend Audiences), so that flag can gate future bulk sends.
 
+## Admin panel
+
+`/admin` (Contacts CRM live; Blog and GA4 planned — see [`docs/build-guide.md`](docs/build-guide.md) Phase 2). Single-admin auth: Supabase Auth session via `@supabase/ssr`, gated by `middleware.ts` plus a server-side re-check in `app/admin/(dashboard)/layout.tsx` and in every `/api/admin/*` route handler (never trust the middleware redirect alone for actual writes). Only the exact `ADMIN_EMAIL` can access it — there's no signup flow, so the first (and only) admin user must be created manually in the Supabase Dashboard.
+
+`/admin/contacts` lists every row from `contacts` (both the contact form and diagnostic quiz feed into this same table) with inline status and notes editing, searchable and filterable by status/source. Writes go through `/api/admin/contacts/[id]` using the service_role client — the admin UI never talks to Supabase directly from the browser.
+
 ## Notes
 
-- Content is hardcoded for this MVP — no CMS, no auth, no Moxie/FluentCRM integration (see `docs/build-guide.md` for what's explicitly out of scope today).
+- Content is hardcoded for this MVP — no CMS, no Moxie/FluentCRM integration (see `docs/build-guide.md` for what's explicitly out of scope today).
 - The footer carries the required DBA legal disclosure: "Montano Systems is a dba (assumed name) of In Motion Web Solutions, LLC, registered in Tennessee." Keep this accurate — update it if the DBA filing status changes, and make sure the TN Form SS-4402 filing uses this same spelling ("Montano", no ñ).
