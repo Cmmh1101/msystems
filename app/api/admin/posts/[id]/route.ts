@@ -8,7 +8,15 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     return NextResponse.json({ ok: false, error: "Not authorized." }, { status: 401 });
   }
 
-  let body: { title?: unknown; slug?: unknown; excerpt?: unknown; content?: unknown; published?: unknown };
+  let body: {
+    title?: unknown;
+    slug?: unknown;
+    excerpt?: unknown;
+    content?: unknown;
+    published?: unknown;
+    featuredImageUrl?: unknown;
+    featuredImageAlt?: unknown;
+  };
   try {
     body = await req.json();
   } catch {
@@ -32,6 +40,8 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   const excerpt = typeof body.excerpt === "string" ? body.excerpt.trim() : "";
   const published = body.published === true;
   const slug = typeof body.slug === "string" && body.slug.trim() ? slugify(body.slug) : slugify(title);
+  const featuredImageUrl = typeof body.featuredImageUrl === "string" ? body.featuredImageUrl.trim() : "";
+  const featuredImageAlt = typeof body.featuredImageAlt === "string" ? body.featuredImageAlt.trim() : "";
 
   if (!title || !content || !slug) {
     return NextResponse.json({ ok: false, error: "Title, slug, and content are required." }, { status: 400 });
@@ -43,6 +53,8 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     excerpt: excerpt || null,
     content,
     published,
+    featured_image_url: featuredImageUrl || null,
+    featured_image_alt: featuredImageAlt || null,
     updated_at: new Date().toISOString(),
   };
 
@@ -70,7 +82,19 @@ export async function DELETE(_req: NextRequest, { params }: { params: { id: stri
   }
 
   const admin = getSupabaseAdmin();
+
+  const { data: existing } = await admin.from("posts").select("featured_image_url").eq("id", params.id).single();
+
   const { error } = await admin.from("posts").delete().eq("id", params.id);
+
+  if (!error && existing?.featured_image_url) {
+    const marker = "/storage/v1/object/public/blog-images/";
+    const idx = existing.featured_image_url.indexOf(marker);
+    if (idx !== -1) {
+      const path = existing.featured_image_url.slice(idx + marker.length);
+      await admin.storage.from("blog-images").remove([path]);
+    }
+  }
 
   if (error) {
     console.error("admin posts delete failed", error);

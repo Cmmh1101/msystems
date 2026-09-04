@@ -19,9 +19,64 @@ export default function PostEditor({ post }: { post?: Post }) {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  const [featuredImageUrl, setFeaturedImageUrl] = useState(post?.featured_image_url ?? "");
+  const [featuredImageAlt, setFeaturedImageAlt] = useState(post?.featured_image_alt ?? "");
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
   function handleTitleChange(value: string) {
     setTitle(value);
     if (!slugTouched) setSlug(slugify(value));
+  }
+
+  async function handleImageSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+
+    setUploadError(null);
+    setUploading(true);
+
+    const previousUrl = featuredImageUrl;
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
+      const json = await res.json();
+
+      if (!res.ok || !json.ok) {
+        setUploadError(json.error || "Upload failed. Please try again.");
+        setUploading(false);
+        return;
+      }
+
+      setFeaturedImageUrl(json.url);
+
+      if (previousUrl) {
+        fetch("/api/admin/upload", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url: previousUrl }),
+        }).catch(() => {});
+      }
+    } catch {
+      setUploadError("Upload failed. Please try again.");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  function handleRemoveImage() {
+    if (featuredImageUrl) {
+      fetch("/api/admin/upload", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: featuredImageUrl }),
+      }).catch(() => {});
+    }
+    setFeaturedImageUrl("");
+    setFeaturedImageAlt("");
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -29,7 +84,15 @@ export default function PostEditor({ post }: { post?: Post }) {
     setError(null);
     setSubmitting(true);
 
-    const payload = { title, slug: slugify(slug), excerpt, content, published };
+    const payload = {
+      title,
+      slug: slugify(slug),
+      excerpt,
+      content,
+      published,
+      featuredImageUrl,
+      featuredImageAlt,
+    };
     const url = isEditing ? `/api/admin/posts/${post!.id}` : "/api/admin/posts";
     const method = isEditing ? "PATCH" : "POST";
 
@@ -85,6 +148,45 @@ export default function PostEditor({ post }: { post?: Post }) {
           onChange={(e) => setExcerpt(e.target.value)}
           placeholder="Shown on the /blog list — one or two sentences."
         />
+      </div>
+
+      <div className="form-row form-row-light">
+        <label>Featured image (optional)</label>
+        {featuredImageUrl ? (
+          <div className="admin-image-preview">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={featuredImageUrl} alt={featuredImageAlt || ""} />
+            <div className="admin-image-preview-actions">
+              <label htmlFor="featured-image-input" className="admin-link-btn">
+                Replace
+              </label>
+              <button type="button" className="admin-link-btn admin-link-danger" onClick={handleRemoveImage}>
+                Remove
+              </button>
+            </div>
+          </div>
+        ) : (
+          <label htmlFor="featured-image-input" className="admin-image-upload-btn">
+            {uploading ? "Uploading…" : "Upload an image"}
+          </label>
+        )}
+        <input
+          id="featured-image-input"
+          type="file"
+          accept="image/png,image/jpeg,image/webp,image/gif"
+          onChange={handleImageSelect}
+          disabled={uploading}
+          hidden
+        />
+        {uploadError && <p className="form-error">{uploadError}</p>}
+        {featuredImageUrl && (
+          <input
+            className="admin-alt-input"
+            value={featuredImageAlt}
+            onChange={(e) => setFeaturedImageAlt(e.target.value)}
+            placeholder="Alt text (describes the image for screen readers and SEO)"
+          />
+        )}
       </div>
 
       <div className="form-row form-row-light">

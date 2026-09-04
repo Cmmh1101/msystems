@@ -8,7 +8,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: "Not authorized." }, { status: 401 });
   }
 
-  let body: { title?: unknown; slug?: unknown; excerpt?: unknown; content?: unknown; published?: unknown };
+  let body: {
+    title?: unknown;
+    slug?: unknown;
+    excerpt?: unknown;
+    content?: unknown;
+    published?: unknown;
+    featuredImageUrl?: unknown;
+    featuredImageAlt?: unknown;
+  };
   try {
     body = await req.json();
   } catch {
@@ -20,6 +28,8 @@ export async function POST(req: NextRequest) {
   const excerpt = typeof body.excerpt === "string" ? body.excerpt.trim() : "";
   const published = body.published === true;
   const slug = typeof body.slug === "string" && body.slug.trim() ? slugify(body.slug) : slugify(title);
+  const featuredImageUrl = typeof body.featuredImageUrl === "string" ? body.featuredImageUrl.trim() : "";
+  const featuredImageAlt = typeof body.featuredImageAlt === "string" ? body.featuredImageAlt.trim() : "";
 
   if (!title || !content || !slug) {
     return NextResponse.json({ ok: false, error: "Title, slug, and content are required." }, { status: 400 });
@@ -35,6 +45,8 @@ export async function POST(req: NextRequest) {
       content,
       published,
       published_at: published ? new Date().toISOString() : null,
+      featured_image_url: featuredImageUrl || null,
+      featured_image_alt: featuredImageAlt || null,
     })
     .select("id")
     .single();

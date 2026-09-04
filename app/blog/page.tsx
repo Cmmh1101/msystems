@@ -17,13 +17,15 @@ interface PostListItem {
   slug: string;
   excerpt: string | null;
   published_at: string;
+  featured_image_url: string | null;
+  featured_image_alt: string | null;
 }
 
 export default async function BlogIndexPage() {
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
     .from("posts")
-    .select("id,title,slug,excerpt,published_at")
+    .select("id,title,slug,excerpt,published_at,featured_image_url,featured_image_alt")
     .eq("published", true)
     .order("published_at", { ascending: false });
 
@@ -54,9 +56,15 @@ export default async function BlogIndexPage() {
               <div className="blog-list-grid">
                 {posts.map((p) => (
                   <a key={p.id} href={`/blog/${p.slug}`} className="blog-card">
-                    <span className="blog-card-date">{new Date(p.published_at).toLocaleDateString()}</span>
-                    <h2>{p.title}</h2>
-                    {p.excerpt && <p>{p.excerpt}</p>}
+                    {p.featured_image_url && (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img className="blog-card-image" src={p.featured_image_url} alt={p.featured_image_alt || ""} />
+                    )}
+                    <div className="blog-card-body">
+                      <span className="blog-card-date">{new Date(p.published_at).toLocaleDateString()}</span>
+                      <h2>{p.title}</h2>
+                      {p.excerpt && <p>{p.excerpt}</p>}
+                    </div>
                   </a>
                 ))}
               </div>

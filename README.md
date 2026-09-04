@@ -24,7 +24,9 @@ Next.js MVP for Montano Systems, the new public brand of **In Motion Web Solutio
    cp .env.example .env.local
    ```
 
-3. Run the Supabase migrations in order, once each, in the Supabase SQL editor: [`0001_create_contacts.sql`](supabase/migrations/0001_create_contacts.sql), [`0002_diagnostic_and_subscription.sql`](supabase/migrations/0002_diagnostic_and_subscription.sql), [`0003_admin_contacts_notes.sql`](supabase/migrations/0003_admin_contacts_notes.sql), then [`0004_create_posts.sql`](supabase/migrations/0004_create_posts.sql).
+3. Run the Supabase migrations in order, once each, in the Supabase SQL editor: [`0001_create_contacts.sql`](supabase/migrations/0001_create_contacts.sql), [`0002_diagnostic_and_subscription.sql`](supabase/migrations/0002_diagnostic_and_subscription.sql), [`0003_admin_contacts_notes.sql`](supabase/migrations/0003_admin_contacts_notes.sql), [`0004_create_posts.sql`](supabase/migrations/0004_create_posts.sql), then [`0005_post_featured_image.sql`](supabase/migrations/0005_post_featured_image.sql).
+
+3a. The blog editor's image upload needs a public Storage bucket named `blog-images` (5MB limit, PNG/JPEG/WebP/GIF only). It already exists on the project this app is configured for — if you ever point this app at a fresh Supabase project, create it first: Supabase Dashboard → Storage → New bucket → name `blog-images`, **Public bucket** on.
 
 4. Create the admin user: Supabase Dashboard → **Authentication → Users → Add User**, using the exact email you set as `ADMIN_EMAIL` and a password of your choosing. There's no public signup page — this is the only way an admin account gets created, and only this one email can log into `/admin`.
 
@@ -77,6 +79,8 @@ netlify deploy --prod
 **Caching note:** every page reading `contacts` or `posts` sets both `export const dynamic = "force-dynamic"` *and* `export const fetchCache = "force-no-store"`. The `dynamic` flag alone wasn't enough in testing — the Supabase JS client's underlying `fetch` calls got cached by Next.js's fetch-cache anyway (reproducible even across dev server restarts, since that cache persists in `.next/cache`), serving stale data after a publish/unpublish. `fetchCache = "force-no-store"` is the explicit override that actually fixed it. If you add a new page that reads live data from Supabase, set both.
 
 `/admin/blog` is a Markdown CMS (`posts` table, migration 0004) — list, create, edit, delete, with a Write/Preview toggle rendered via `react-markdown`. Slugs auto-generate from the title (editable) and must be unique. Draft posts (`published: false`) never appear on the public site; `/blog` and `/blog/[slug]` only ever query `published = true`. Publishing sets `published_at` once and leaves it alone on later edits, so post dates don't shift every time you fix a typo.
+
+Posts can carry a featured image (migration 0005: `featured_image_url`, `featured_image_alt`). Uploads go through `/api/admin/upload` to the `blog-images` Storage bucket (server-side, service_role — never a direct client-to-Storage upload), with type/size validation (5MB max, PNG/JPEG/WebP/GIF only) enforced both in the API route and at the bucket level. Replacing or removing an image, or deleting a post that has one, cleans up the old file from Storage so nothing orphans. The image shows as a thumbnail on `/blog`, a hero image on the post page, and populates `og:image` for social sharing.
 
 ## Notes
 

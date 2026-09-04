@@ -18,4 +18,6 @@ export interface Post {
   content: string;
   published: boolean;
   published_at: string | null;
+  featured_image_url: string | null;
+  featured_image_alt: string | null;
 }

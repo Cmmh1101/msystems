@@ -10,7 +10,9 @@ export default async function EditPostPage({ params }: { params: { id: string } 
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
     .from("posts")
-    .select("id,created_at,updated_at,title,slug,excerpt,content,published,published_at")
+    .select(
+      "id,created_at,updated_at,title,slug,excerpt,content,published,published_at,featured_image_url,featured_image_alt"
+    )
     .eq("id", params.id)
     .single();
 
