@@ -1,27 +1,26 @@
+import { getDictionary } from "@/lib/i18n/server";
+
 export default function About() {
+  const t = getDictionary().about;
+  const [portraitLine1, portraitLine2] = t.portrait.split("\n");
+
   return (
     <section className="about section" id="about">
       <div className="container about-grid">
         <div className="about-portrait">
-          PORTRAIT
+          {portraitLine1}
           <br />
-          PLACEHOLDER
+          {portraitLine2}
         </div>
         <div>
           <p className="eyebrow" style={{ color: "var(--brass)" }}>
-            Who&apos;s building this
+            {t.eyebrow}
           </p>
-          <h2>Built by Carla Montaño</h2>
-          <p>
-            Carla is a self-taught software engineer who built her own technical career from the ground up —
-            and now brings that same systems thinking to the businesses she works with. Montano Systems is
-            where that experience becomes practical: fewer tools, clearer operations, more of your time back.
-          </p>
+          <h2>{t.heading}</h2>
+          <p>{t.bio}</p>
 
           <div className="collab-note">
-            <b>A right-sized team, every time.</b> For specialized builds, Carla brings in a small network of
-            vetted developers, designers, and automation engineers — sized to the project, never more than it
-            needs.
+            <b>{t.collabLabel}</b> {t.collabRest}
           </div>
         </div>
       </div>

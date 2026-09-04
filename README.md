@@ -24,7 +24,7 @@ Next.js MVP for Montano Systems, the new public brand of **In Motion Web Solutio
    cp .env.example .env.local
    ```
 
-3. Run the Supabase migrations in order, once each, in the Supabase SQL editor: [`0001_create_contacts.sql`](supabase/migrations/0001_create_contacts.sql), [`0002_diagnostic_and_subscription.sql`](supabase/migrations/0002_diagnostic_and_subscription.sql), [`0003_admin_contacts_notes.sql`](supabase/migrations/0003_admin_contacts_notes.sql), [`0004_create_posts.sql`](supabase/migrations/0004_create_posts.sql), then [`0005_post_featured_image.sql`](supabase/migrations/0005_post_featured_image.sql).
+3. Run the Supabase migrations in order, once each, in the Supabase SQL editor: [`0001_create_contacts.sql`](supabase/migrations/0001_create_contacts.sql), [`0002_diagnostic_and_subscription.sql`](supabase/migrations/0002_diagnostic_and_subscription.sql), [`0003_admin_contacts_notes.sql`](supabase/migrations/0003_admin_contacts_notes.sql), [`0004_create_posts.sql`](supabase/migrations/0004_create_posts.sql), [`0005_post_featured_image.sql`](supabase/migrations/0005_post_featured_image.sql), then [`0006_post_translations.sql`](supabase/migrations/0006_post_translations.sql).
 
 3a. The blog editor's image upload needs a public Storage bucket named `blog-images` (5MB limit, PNG/JPEG/WebP/GIF only). It already exists on the project this app is configured for — if you ever point this app at a fresh Supabase project, create it first: Supabase Dashboard → Storage → New bucket → name `blog-images`, **Public bucket** on.
 
@@ -81,6 +81,15 @@ netlify deploy --prod
 `/admin/blog` is a Markdown CMS (`posts` table, migration 0004) — list, create, edit, delete, with a Write/Preview toggle rendered via `react-markdown`. Slugs auto-generate from the title (editable) and must be unique. Draft posts (`published: false`) never appear on the public site; `/blog` and `/blog/[slug]` only ever query `published = true`. Publishing sets `published_at` once and leaves it alone on later edits, so post dates don't shift every time you fix a typo.
 
 Posts can carry a featured image (migration 0005: `featured_image_url`, `featured_image_alt`). Uploads go through `/api/admin/upload` to the `blog-images` Storage bucket (server-side, service_role — never a direct client-to-Storage upload), with type/size validation (5MB max, PNG/JPEG/WebP/GIF only) enforced both in the API route and at the bucket level. Replacing or removing an image, or deleting a post that has one, cleans up the old file from Storage so nothing orphans. The image shows as a thumbnail on `/blog`, a hero image on the post page, and populates `og:image` for social sharing.
+
+## English / Spanish (i18n)
+
+The public site (homepage, diagnostic quiz, blog UI, all transactional emails) has a manual EN/ES toggle in the header — no translation API, no ongoing cost. Two layers:
+
+- **Static UI text** — every fixed string (nav, buttons, headings, form labels, quiz questions/tiers) lives in `lib/i18n/dictionary.ts` as parallel `en`/`es` objects, translated once and hardcoded. `lib/i18n/server.ts` reads the `lang` cookie (`getLocale()`) for Server Components; Client Components (`Header`, `ContactForm`, `DiagnosticQuiz`) receive `locale` as a prop from their Server Component parent instead of reading the cookie themselves. `components/LanguageToggle.tsx` sets the cookie and calls `router.refresh()` to re-render Server Components with the new locale — Client Component state (e.g. the diagnostic quiz's current step) is preserved since only the page shell re-renders, not the whole app.
+- **Blog post content** — manual dual-language entry, not machine translation. Migration 0006 adds `title_es`/`excerpt_es`/`content_es` to `posts`. The editor has an English/Español tab (slug, published state, and featured image stay shared — only title/excerpt/content differ per language). `lib/posts.ts`'s `localizedPost()` picks the Spanish fields when `locale === "es"` **and** `title_es` is set, otherwise falls back to English — so publishing a post with no Spanish content is always safe, nothing breaks or shows blank.
+
+Root layout's `<html lang>` updates to match the cookie. Contact form and diagnostic quiz emails are sent in whichever language the visitor was using when they submitted (a `locale` field travels with the POST body); the internal "new lead" notification to `NOTIFY_EMAIL` always stays in English since that's for Carla, not the visitor.
 
 ## Notes
 

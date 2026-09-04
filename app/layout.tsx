@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
+import { getLocale } from "@/lib/i18n/server";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -44,8 +45,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = getLocale();
+
   return (
-    <html lang="en" className={`${spaceGrotesk.variable} ${ibmPlexSans.variable} ${ibmPlexMono.variable}`}>
+    <html lang={locale} className={`${spaceGrotesk.variable} ${ibmPlexSans.variable} ${ibmPlexMono.variable}`}>
       <body className="font-body">{children}</body>
     </html>
   );

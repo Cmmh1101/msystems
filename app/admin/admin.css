@@ -290,6 +290,46 @@
 .admin-editor {
   max-width: 760px;
 }
+.admin-lang-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.admin-lang-tabs button {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  letter-spacing: 0.03em;
+  padding: 8px 16px;
+  border: 1px solid rgba(15, 27, 45, 0.15);
+  border-radius: 3px;
+  background: var(--paper);
+  color: var(--graphite-soft);
+  cursor: pointer;
+}
+.admin-lang-tabs button.active {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.admin-lang-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.03em;
+  padding: 2px 6px;
+  border-radius: 2px;
+  margin-right: 4px;
+  background: rgba(28, 37, 48, 0.08);
+  color: var(--graphite);
+}
+.admin-lang-badge.has-es {
+  background: rgba(184, 147, 90, 0.15);
+  color: var(--brass);
+}
+.admin-lang-badge.muted {
+  color: var(--graphite-soft);
+  opacity: 0.5;
+}
 .admin-editor-tabs {
   display: flex;
   gap: 2px;

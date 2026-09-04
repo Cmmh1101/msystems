@@ -10,9 +10,12 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 
   let body: {
     title?: unknown;
+    titleEs?: unknown;
     slug?: unknown;
     excerpt?: unknown;
+    excerptEs?: unknown;
     content?: unknown;
+    contentEs?: unknown;
     published?: unknown;
     featuredImageUrl?: unknown;
     featuredImageAlt?: unknown;
@@ -36,8 +39,11 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
 
   const title = typeof body.title === "string" ? body.title.trim() : "";
+  const titleEs = typeof body.titleEs === "string" ? body.titleEs.trim() : "";
   const content = typeof body.content === "string" ? body.content : "";
+  const contentEs = typeof body.contentEs === "string" ? body.contentEs : "";
   const excerpt = typeof body.excerpt === "string" ? body.excerpt.trim() : "";
+  const excerptEs = typeof body.excerptEs === "string" ? body.excerptEs.trim() : "";
   const published = body.published === true;
   const slug = typeof body.slug === "string" && body.slug.trim() ? slugify(body.slug) : slugify(title);
   const featuredImageUrl = typeof body.featuredImageUrl === "string" ? body.featuredImageUrl.trim() : "";
@@ -49,9 +55,12 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 
   const update: Record<string, unknown> = {
     title,
+    title_es: titleEs || null,
     slug,
     excerpt: excerpt || null,
+    excerpt_es: excerptEs || null,
     content,
+    content_es: contentEs || null,
     published,
     featured_image_url: featuredImageUrl || null,
     featured_image_alt: featuredImageAlt || null,

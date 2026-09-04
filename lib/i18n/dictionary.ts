@@ -1,0 +1,310 @@
+export type Locale = "en" | "es";
+export const LOCALE_COOKIE = "lang";
+export const DEFAULT_LOCALE: Locale = "en";
+
+const en = {
+  nav: {
+    services: "Services",
+    about: "About",
+    blog: "Blog",
+    contact: "Contact",
+    freeCheck: "Free systems check",
+  },
+  hero: {
+    eyebrow: "Systems architecture for growing businesses",
+    headline: "Your business runs on twelve tools that don't talk to each other.",
+    ledePre: "We design the systems, automation, and AI that let it run on ",
+    ledeOne: "one",
+    ledePost: ", instead.",
+    ctaPrimary: "Take the free systems check →",
+    ctaSecondary: "Book a systems audit",
+    steps: ["Audit", "Build", "Develop", "Automate", "Partner"],
+  },
+  problem: {
+    eyebrow: "The cost of sprawl",
+    pre: "Most growing businesses aren't short on tools. ",
+    accent: "They're short on a system.",
+    post: " Every new app promises to save time — and quietly adds another login, another export, another thing that breaks when no one's looking.",
+  },
+  modules: {
+    eyebrow: "The engagement",
+    heading: "How we work",
+    items: [
+      {
+        num: "01 — Diagnose",
+        title: "Audit & Roadmap",
+        description:
+          "We map every tool, workflow, and manual step in your business, then hand you a prioritized plan for what to fix first.",
+        spec: "2 weeks · Fixed fee",
+      },
+      {
+        num: "02 — Connect",
+        title: "Systems Build",
+        description:
+          "We connect your CRM, scheduling, invoicing, and lead flow into one system that runs without you chasing it.",
+        spec: "4–8 weeks · Project",
+      },
+      {
+        num: "03 — Build",
+        title: "Custom Development",
+        description:
+          "When the system needs something that doesn't exist yet — a client portal, an internal tool, a real web app — we build it, not just connect it.",
+        spec: "6–12 weeks · Project",
+      },
+      {
+        num: "04 — Elevate",
+        title: "AI & Intelligence",
+        description:
+          "Automations and AI agents for follow-up, routing, and reporting — the parts of the business that shouldn't need a human every time.",
+        spec: "Ongoing · Add-on",
+      },
+      {
+        num: "05 — Sustain",
+        title: "Ongoing Partner",
+        description: "Monthly iteration as your business grows — new automations, new integrations, one point of contact.",
+        spec: "Monthly · Retainer",
+      },
+    ],
+  },
+  about: {
+    eyebrow: "Who's building this",
+    heading: "Built by Carla Montaño",
+    portrait: "PORTRAIT\nPLACEHOLDER",
+    bio: "Carla is a self-taught software engineer who built her own technical career from the ground up — and now brings that same systems thinking to the businesses she works with. Montano Systems is where that experience becomes practical: fewer tools, clearer operations, more of your time back.",
+    collabLabel: "A right-sized team, every time.",
+    collabRest:
+      "For specialized builds, Carla brings in a small network of vetted developers, designers, and automation engineers — sized to the project, never more than it needs.",
+  },
+  cta: {
+    heading: "Ready to see what's slowing you down?",
+    sub: "A systems audit takes two weeks and gives you a clear, prioritized plan — even if you never hire us to build it.",
+  },
+  contactForm: {
+    nameLabel: "Name",
+    namePlaceholder: "Your name",
+    emailLabel: "Email",
+    emailPlaceholder: "you@company.com",
+    companyLabel: "Company (optional)",
+    companyPlaceholder: "Your company",
+    messageLabel: "What's slowing you down?",
+    messagePlaceholder: "Tell us about your current setup",
+    submit: "Book a systems audit",
+    sending: "Sending…",
+    successMessage: "Got it — we'll be in touch within one business day.",
+    errorMessage: "Something went wrong on our end — please try again, or email us directly.",
+    errors: {
+      name: "Name is required.",
+      email: "Email is required.",
+      emailInvalid: "Enter a valid email address.",
+      message: "Tell us a bit about what you need.",
+    },
+  },
+  footer: {
+    services: "Services",
+    about: "About",
+    blog: "Blog",
+    freeCheck: "Free Systems Check",
+    contact: "Contact",
+    copyright: "In Motion Web Solutions, LLC — dba Montano Systems",
+    legal: "Montano Systems is a dba (assumed name) of In Motion Web Solutions, LLC, registered in Tennessee.",
+  },
+  diagnosticPage: {
+    title: "Free Systems Check — Montano Systems",
+    description: "Six quick questions to see how much tool sprawl is costing your business, and what to fix first.",
+  },
+  diagnostic: {
+    intro: {
+      eyebrow: "Free systems check",
+      heading: "Where is your business losing time to tool sprawl?",
+      lede: "Six quick questions. At the end, you'll get a personalized score and a plain-English read on what to fix first — sent to your inbox too.",
+      start: "Start the check →",
+    },
+    questionWord: "Question",
+    ofWord: "of",
+    back: "← Back",
+    email: {
+      eyebrow: "Almost there",
+      heading: "Where should we send your results?",
+      nameLabel: "Name",
+      namePlaceholder: "Your name",
+      emailLabel: "Email",
+      emailPlaceholder: "you@company.com",
+      companyLabel: "Company (optional)",
+      companyPlaceholder: "Your company",
+      optIn: "Send me occasional tips on systems and automation. Unsubscribe anytime.",
+      submit: "See my results",
+      scoring: "Scoring…",
+      emailInvalid: "Enter a valid email address.",
+      errorGeneric: "Something went wrong on our end — please try again.",
+      tryAgain: "Try again",
+    },
+    result: {
+      eyebrow: "Your results",
+      cta: "Book a systems audit",
+      download: "Download report",
+      sentNotePre: "We've also emailed a copy of this to ",
+      sentNotePost: ".",
+    },
+  },
+  blog: {
+    eyebrow: "From the notebook",
+    heading: "Blog",
+    empty: "Nothing published yet — check back soon.",
+    backToBlog: "← Back to blog",
+  },
+};
+
+const es: typeof en = {
+  nav: {
+    services: "Servicios",
+    about: "Nosotros",
+    blog: "Blog",
+    contact: "Contacto",
+    freeCheck: "Diagnóstico gratis",
+  },
+  hero: {
+    eyebrow: "Arquitectura de sistemas para negocios en crecimiento",
+    headline: "Tu negocio funciona con doce herramientas que no se comunican entre sí.",
+    ledePre: "Diseñamos los sistemas, la automatización y la IA para que funcione con ",
+    ledeOne: "una sola",
+    ledePost: ", en su lugar.",
+    ctaPrimary: "Haz el diagnóstico gratis →",
+    ctaSecondary: "Agenda una auditoría de sistemas",
+    steps: ["Auditar", "Construir", "Desarrollar", "Automatizar", "Acompañar"],
+  },
+  problem: {
+    eyebrow: "El costo de la dispersión",
+    pre: "A la mayoría de los negocios en crecimiento no les faltan herramientas. ",
+    accent: "Les falta un sistema.",
+    post: " Cada nueva aplicación promete ahorrar tiempo — y en silencio agrega otro inicio de sesión, otra exportación, otra cosa que falla cuando nadie está mirando.",
+  },
+  modules: {
+    eyebrow: "El servicio",
+    heading: "Cómo trabajamos",
+    items: [
+      {
+        num: "01 — Diagnosticar",
+        title: "Auditoría y Hoja de Ruta",
+        description:
+          "Mapeamos cada herramienta, flujo de trabajo y paso manual de tu negocio, y te entregamos un plan priorizado de qué arreglar primero.",
+        spec: "2 semanas · Tarifa fija",
+      },
+      {
+        num: "02 — Conectar",
+        title: "Construcción de Sistemas",
+        description:
+          "Conectamos tu CRM, agenda, facturación y flujo de leads en un solo sistema que funciona sin que tengas que perseguirlo.",
+        spec: "4–8 semanas · Proyecto",
+      },
+      {
+        num: "03 — Construir",
+        title: "Desarrollo a Medida",
+        description:
+          "Cuando el sistema necesita algo que aún no existe — un portal de clientes, una herramienta interna, una aplicación web real — lo construimos, no solo lo conectamos.",
+        spec: "6–12 semanas · Proyecto",
+      },
+      {
+        num: "04 — Potenciar",
+        title: "IA e Inteligencia",
+        description:
+          "Automatizaciones y agentes de IA para seguimiento, enrutamiento y reportes — las partes del negocio que no deberían necesitar una persona cada vez.",
+        spec: "Continuo · Complemento",
+      },
+      {
+        num: "05 — Sostener",
+        title: "Socio Continuo",
+        description: "Iteración mensual a medida que tu negocio crece — nuevas automatizaciones, nuevas integraciones, un solo punto de contacto.",
+        spec: "Mensual · Membresía",
+      },
+    ],
+  },
+  about: {
+    eyebrow: "Quién construye esto",
+    heading: "Creado por Carla Montaño",
+    portrait: "RETRATO\nPRÓXIMAMENTE",
+    bio: "Carla es una ingeniera de software autodidacta que construyó su propia carrera técnica desde cero — y ahora aplica esa misma forma de pensar en sistemas a los negocios con los que trabaja. Montano Systems es donde esa experiencia se vuelve práctica: menos herramientas, operaciones más claras, más tiempo de vuelta para ti.",
+    collabLabel: "Un equipo del tamaño justo, siempre.",
+    collabRest:
+      "Para proyectos especializados, Carla trae una pequeña red de desarrolladores, diseñadores e ingenieros de automatización de confianza — del tamaño que el proyecto necesita, ni más.",
+  },
+  cta: {
+    heading: "¿Listo para ver qué te está frenando?",
+    sub: "Una auditoría de sistemas toma dos semanas y te da un plan claro y priorizado — incluso si nunca nos contratas para construirlo.",
+  },
+  contactForm: {
+    nameLabel: "Nombre",
+    namePlaceholder: "Tu nombre",
+    emailLabel: "Correo electrónico",
+    emailPlaceholder: "tu@empresa.com",
+    companyLabel: "Empresa (opcional)",
+    companyPlaceholder: "Tu empresa",
+    messageLabel: "¿Qué te está frenando?",
+    messagePlaceholder: "Cuéntanos sobre tu situación actual",
+    submit: "Agenda una auditoría de sistemas",
+    sending: "Enviando…",
+    successMessage: "Recibido — te contactaremos dentro de un día hábil.",
+    errorMessage: "Algo salió mal de nuestro lado — por favor intenta de nuevo, o escríbenos directamente.",
+    errors: {
+      name: "El nombre es obligatorio.",
+      email: "El correo electrónico es obligatorio.",
+      emailInvalid: "Ingresa un correo electrónico válido.",
+      message: "Cuéntanos un poco sobre lo que necesitas.",
+    },
+  },
+  footer: {
+    services: "Servicios",
+    about: "Nosotros",
+    blog: "Blog",
+    freeCheck: "Diagnóstico Gratis",
+    contact: "Contacto",
+    copyright: "In Motion Web Solutions, LLC — dba Montano Systems",
+    legal: "Montano Systems es un dba (nombre asumido) de In Motion Web Solutions, LLC, registrada en Tennessee.",
+  },
+  diagnosticPage: {
+    title: "Diagnóstico Gratis — Montano Systems",
+    description: "Seis preguntas rápidas para ver cuánto te está costando la dispersión de herramientas, y qué arreglar primero.",
+  },
+  diagnostic: {
+    intro: {
+      eyebrow: "Diagnóstico gratis",
+      heading: "¿Dónde está tu negocio perdiendo tiempo por la dispersión de herramientas?",
+      lede: "Seis preguntas rápidas. Al final, obtendrás un puntaje personalizado y una lectura clara de qué arreglar primero — también la enviamos a tu correo.",
+      start: "Comenzar el diagnóstico →",
+    },
+    questionWord: "Pregunta",
+    ofWord: "de",
+    back: "← Atrás",
+    email: {
+      eyebrow: "Ya casi",
+      heading: "¿A dónde enviamos tus resultados?",
+      nameLabel: "Nombre",
+      namePlaceholder: "Tu nombre",
+      emailLabel: "Correo electrónico",
+      emailPlaceholder: "tu@empresa.com",
+      companyLabel: "Empresa (opcional)",
+      companyPlaceholder: "Tu empresa",
+      optIn: "Envíenme consejos ocasionales sobre sistemas y automatización. Puedo darme de baja cuando quiera.",
+      submit: "Ver mis resultados",
+      scoring: "Calculando…",
+      emailInvalid: "Ingresa un correo electrónico válido.",
+      errorGeneric: "Algo salió mal de nuestro lado — por favor intenta de nuevo.",
+      tryAgain: "Intentar de nuevo",
+    },
+    result: {
+      eyebrow: "Tus resultados",
+      cta: "Agenda una auditoría de sistemas",
+      download: "Descargar reporte",
+      sentNotePre: "También enviamos una copia de esto a ",
+      sentNotePost: ".",
+    },
+  },
+  blog: {
+    eyebrow: "Desde el cuaderno",
+    heading: "Blog",
+    empty: "Todavía no hay nada publicado — vuelve pronto.",
+    backToBlog: "← Volver al blog",
+  },
+};
+
+export const dictionaries = { en, es };
+export type Dictionary = typeof en;

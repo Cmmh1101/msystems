@@ -5,11 +5,14 @@ import Modules from "@/components/Modules";
 import About from "@/components/About";
 import CtaSection from "@/components/CtaSection";
 import Footer from "@/components/Footer";
+import { getLocale } from "@/lib/i18n/server";
 
 export default function Home() {
+  const locale = getLocale();
+
   return (
     <>
-      <Header />
+      <Header locale={locale} />
       <main>
         <Hero />
         <Problem />

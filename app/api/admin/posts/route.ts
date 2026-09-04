@@ -10,9 +10,12 @@ export async function POST(req: NextRequest) {
 
   let body: {
     title?: unknown;
+    titleEs?: unknown;
     slug?: unknown;
     excerpt?: unknown;
+    excerptEs?: unknown;
     content?: unknown;
+    contentEs?: unknown;
     published?: unknown;
     featuredImageUrl?: unknown;
     featuredImageAlt?: unknown;
@@ -24,8 +27,11 @@ export async function POST(req: NextRequest) {
   }
 
   const title = typeof body.title === "string" ? body.title.trim() : "";
+  const titleEs = typeof body.titleEs === "string" ? body.titleEs.trim() : "";
   const content = typeof body.content === "string" ? body.content : "";
+  const contentEs = typeof body.contentEs === "string" ? body.contentEs : "";
   const excerpt = typeof body.excerpt === "string" ? body.excerpt.trim() : "";
+  const excerptEs = typeof body.excerptEs === "string" ? body.excerptEs.trim() : "";
   const published = body.published === true;
   const slug = typeof body.slug === "string" && body.slug.trim() ? slugify(body.slug) : slugify(title);
   const featuredImageUrl = typeof body.featuredImageUrl === "string" ? body.featuredImageUrl.trim() : "";
@@ -40,9 +46,12 @@ export async function POST(req: NextRequest) {
     .from("posts")
     .insert({
       title,
+      title_es: titleEs || null,
       slug,
       excerpt: excerpt || null,
+      excerpt_es: excerptEs || null,
       content,
+      content_es: contentEs || null,
       published,
       published_at: published ? new Date().toISOString() : null,
       featured_image_url: featuredImageUrl || null,

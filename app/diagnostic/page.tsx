@@ -2,21 +2,26 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import DiagnosticQuiz from "@/components/diagnostic/DiagnosticQuiz";
+import { getDictionary, getLocale } from "@/lib/i18n/server";
 
-export const metadata: Metadata = {
-  title: "Free Systems Check — Montano Systems",
-  description:
-    "Six quick questions to see how much tool sprawl is costing your business, and what to fix first.",
-};
+export function generateMetadata(): Metadata {
+  const t = getDictionary().diagnosticPage;
+  return {
+    title: t.title,
+    description: t.description,
+  };
+}
 
 export default function DiagnosticPage() {
+  const locale = getLocale();
+
   return (
     <>
-      <Header />
+      <Header locale={locale} />
       <main>
         <section className="diagnostic-section section">
           <div className="container diagnostic-container">
-            <DiagnosticQuiz />
+            <DiagnosticQuiz locale={locale} />
           </div>
         </section>
       </main>

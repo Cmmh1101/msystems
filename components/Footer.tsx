@@ -1,5 +1,8 @@
+import { getDictionary } from "@/lib/i18n/server";
+
 export default function Footer() {
   const year = new Date().getFullYear();
+  const t = getDictionary().footer;
 
   return (
     <footer className="site-footer">
@@ -8,19 +11,17 @@ export default function Footer() {
           MONTANO <span>SYSTEMS</span>
         </a>
         <nav className="footer-links" aria-label="Footer">
-          <a href="/#modules">Services</a>
-          <a href="/#about">About</a>
-          <a href="/blog">Blog</a>
-          <a href="/diagnostic">Free Systems Check</a>
-          <a href="/#cta">Contact</a>
+          <a href="/#modules">{t.services}</a>
+          <a href="/#about">{t.about}</a>
+          <a href="/blog">{t.blog}</a>
+          <a href="/diagnostic">{t.freeCheck}</a>
+          <a href="/#cta">{t.contact}</a>
         </nav>
         <span className="footer-fine">
-          © {year} In Motion Web Solutions, LLC — dba Montano Systems
+          © {year} {t.copyright}
         </span>
       </div>
-      <div className="container footer-legal">
-        Montano Systems is a dba (assumed name) of In Motion Web Solutions, LLC, registered in Tennessee.
-      </div>
+      <div className="container footer-legal">{t.legal}</div>
     </footer>
   );
 }

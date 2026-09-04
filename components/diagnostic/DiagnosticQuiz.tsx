@@ -2,12 +2,14 @@
 
 import { FormEvent, useState } from "react";
 import { DIAGNOSTIC_QUESTIONS, DIAGNOSTIC_TIERS, MAX_SCORE, DiagnosticTier } from "@/lib/diagnostic";
+import { dictionaries, type Locale } from "@/lib/i18n/dictionary";
 
 type Stage = "intro" | "question" | "email" | "submitting" | "result" | "error";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export default function DiagnosticQuiz() {
+export default function DiagnosticQuiz({ locale }: { locale: Locale }) {
+  const t = dictionaries[locale].diagnostic;
   const [stage, setStage] = useState<Stage>("intro");
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<number[]>(Array(DIAGNOSTIC_QUESTIONS.length).fill(-1));
@@ -46,7 +48,7 @@ export default function DiagnosticQuiz() {
     const newsletterOptIn = data.get("newsletterOptIn") === "on";
 
     if (!submittedEmail || !EMAIL_RE.test(submittedEmail)) {
-      setEmailError("Enter a valid email address.");
+      setEmailError(t.email.emailInvalid);
       return;
     }
     setEmailError(null);
@@ -63,17 +65,18 @@ export default function DiagnosticQuiz() {
           company,
           newsletterOptIn,
           answers,
+          locale,
         }),
       });
 
       if (!res.ok) throw new Error("request-failed");
       const json = await res.json();
 
-      const tier = DIAGNOSTIC_TIERS.find((t) => t.id === json.tierId) ?? DIAGNOSTIC_TIERS[0];
+      const tier = DIAGNOSTIC_TIERS.find((tr) => tr.id === json.tierId) ?? DIAGNOSTIC_TIERS[0];
       setResult({ score: json.score, tier });
       setStage("result");
     } catch {
-      setSubmitError("Something went wrong on our end — please try again.");
+      setSubmitError(t.email.errorGeneric);
       setStage("error");
     }
   }
@@ -87,15 +90,12 @@ export default function DiagnosticQuiz() {
     return (
       <div className="diagnostic-card">
         <p className="eyebrow" style={{ color: "var(--ink)" }}>
-          Free systems check
+          {t.intro.eyebrow}
         </p>
-        <h2>Where is your business losing time to tool sprawl?</h2>
-        <p className="diagnostic-lede">
-          Six quick questions. At the end, you&apos;ll get a personalized score and a plain-English read on
-          what to fix first — sent to your inbox too.
-        </p>
+        <h2>{t.intro.heading}</h2>
+        <p className="diagnostic-lede">{t.intro.lede}</p>
         <button className="btn btn-primary" onClick={() => setStage("question")}>
-          Start the check →
+          {t.intro.start}
         </button>
       </div>
     );
@@ -113,27 +113,27 @@ export default function DiagnosticQuiz() {
             />
           </div>
           <span className="diagnostic-progress-label">
-            Question {step + 1} of {DIAGNOSTIC_QUESTIONS.length}
+            {t.questionWord} {step + 1} {t.ofWord} {DIAGNOSTIC_QUESTIONS.length}
           </span>
         </div>
 
-        <h3 className="diagnostic-prompt">{question.prompt}</h3>
+        <h3 className="diagnostic-prompt">{question.prompt[locale]}</h3>
 
         <div className="diagnostic-options">
           {question.options.map((option, i) => (
             <button
-              key={option.label}
+              key={option.label.en}
               type="button"
               className={`diagnostic-option ${answers[step] === i ? "selected" : ""}`}
               onClick={() => selectAnswer(i)}
             >
-              {option.label}
+              {option.label[locale]}
             </button>
           ))}
         </div>
 
         <button type="button" className="diagnostic-back" onClick={goBack}>
-          ← Back
+          {t.back}
         </button>
       </div>
     );
@@ -143,22 +143,22 @@ export default function DiagnosticQuiz() {
     return (
       <div className="diagnostic-card">
         <p className="eyebrow" style={{ color: "var(--ink)" }}>
-          Almost there
+          {t.email.eyebrow}
         </p>
-        <h3 className="diagnostic-prompt">Where should we send your results?</h3>
+        <h3 className="diagnostic-prompt">{t.email.heading}</h3>
         <form onSubmit={handleEmailSubmit} noValidate>
           <div className="form-row form-row-light">
-            <label htmlFor="d-name">Name</label>
-            <input id="d-name" name="name" type="text" autoComplete="name" placeholder="Your name" />
+            <label htmlFor="d-name">{t.email.nameLabel}</label>
+            <input id="d-name" name="name" type="text" autoComplete="name" placeholder={t.email.namePlaceholder} />
           </div>
           <div className="form-row form-row-light">
-            <label htmlFor="d-email">Email</label>
+            <label htmlFor="d-email">{t.email.emailLabel}</label>
             <input
               id="d-email"
               name="email"
               type="email"
               autoComplete="email"
-              placeholder="you@company.com"
+              placeholder={t.email.emailPlaceholder}
               aria-invalid={!!emailError}
               aria-describedby={emailError ? "d-email-error" : undefined}
             />
@@ -169,23 +169,23 @@ export default function DiagnosticQuiz() {
             )}
           </div>
           <div className="form-row form-row-light">
-            <label htmlFor="d-company">Company (optional)</label>
-            <input id="d-company" name="company" type="text" autoComplete="organization" placeholder="Your company" />
+            <label htmlFor="d-company">{t.email.companyLabel}</label>
+            <input id="d-company" name="company" type="text" autoComplete="organization" placeholder={t.email.companyPlaceholder} />
           </div>
           <label className="diagnostic-checkbox">
             <input type="checkbox" name="newsletterOptIn" defaultChecked />
-            Send me occasional tips on systems and automation. Unsubscribe anytime.
+            {t.email.optIn}
           </label>
 
           <button type="submit" className="btn btn-primary" disabled={stage === "submitting"}>
-            {stage === "submitting" ? "Scoring…" : "See my results"}
+            {stage === "submitting" ? t.email.scoring : t.email.submit}
           </button>
 
           {stage === "error" && (
             <p className="form-status error" role="alert">
               {submitError}{" "}
               <button type="button" className="diagnostic-retry" onClick={retrySubmit}>
-                Try again
+                {t.email.tryAgain}
               </button>
             </p>
           )}
@@ -198,25 +198,29 @@ export default function DiagnosticQuiz() {
     return (
       <div className="diagnostic-card diagnostic-result" id="diagnostic-result-print">
         <p className="eyebrow" style={{ color: "var(--brass)" }}>
-          Your results
+          {t.result.eyebrow}
         </p>
         <div className="diagnostic-score">
           <span className="diagnostic-score-num">{result.score}</span>
           <span className="diagnostic-score-max">/ {MAX_SCORE}</span>
         </div>
-        <h3 className="diagnostic-tier">{result.tier.label}</h3>
-        <p className="diagnostic-lede">{result.tier.summary}</p>
-        <p className="diagnostic-lede">{result.tier.recommendation}</p>
+        <h3 className="diagnostic-tier">{result.tier.label[locale]}</h3>
+        <p className="diagnostic-lede">{result.tier.summary[locale]}</p>
+        <p className="diagnostic-lede">{result.tier.recommendation[locale]}</p>
 
         <div className="diagnostic-result-actions">
           <a href="/#cta" className="btn btn-primary">
-            Book a systems audit
+            {t.result.cta}
           </a>
           <button type="button" className="btn btn-ghost on-light" onClick={() => window.print()}>
-            Download report
+            {t.result.download}
           </button>
         </div>
-        <p className="diagnostic-sent-note">We&apos;ve also emailed a copy of this to {email}.</p>
+        <p className="diagnostic-sent-note">
+          {t.result.sentNotePre}
+          {email}
+          {t.result.sentNotePost}
+        </p>
       </div>
     );
   }

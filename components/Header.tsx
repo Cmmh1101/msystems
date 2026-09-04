@@ -1,9 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { dictionaries, type Locale } from "@/lib/i18n/dictionary";
+import LanguageToggle from "./LanguageToggle";
 
-export default function Header() {
+export default function Header({ locale }: { locale: Locale }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const t = dictionaries[locale].nav;
 
   return (
     <header className="site-header">
@@ -12,14 +15,17 @@ export default function Header() {
           MONTANO <span>SYSTEMS</span>
         </a>
         <nav className="nav-links" aria-label="Primary">
-          <a href="/#modules">Services</a>
-          <a href="/#about">About</a>
-          <a href="/blog">Blog</a>
-          <a href="/#cta">Contact</a>
+          <a href="/#modules">{t.services}</a>
+          <a href="/#about">{t.about}</a>
+          <a href="/blog">{t.blog}</a>
+          <a href="/#cta">{t.contact}</a>
         </nav>
         <div className="nav-cta">
+          <span className="lang-toggle-slot">
+            <LanguageToggle locale={locale} dark />
+          </span>
           <a href="/diagnostic" className="btn btn-primary" style={{ padding: "10px 18px" }}>
-            Free systems check
+            {t.freeCheck}
           </a>
           <button
             className="menu-toggle"
@@ -36,17 +42,20 @@ export default function Header() {
       {isMenuOpen && (
         <nav id="mobile-nav" className="mobile-nav" aria-label="Mobile">
           <a href="/#modules" onClick={() => setIsMenuOpen(false)}>
-            Services
+            {t.services}
           </a>
           <a href="/#about" onClick={() => setIsMenuOpen(false)}>
-            About
+            {t.about}
           </a>
           <a href="/blog" onClick={() => setIsMenuOpen(false)}>
-            Blog
+            {t.blog}
           </a>
           <a href="/#cta" onClick={() => setIsMenuOpen(false)}>
-            Contact
+            {t.contact}
           </a>
+          <div className="mobile-nav-lang">
+            <LanguageToggle locale={locale} dark />
+          </div>
         </nav>
       )}
     </header>

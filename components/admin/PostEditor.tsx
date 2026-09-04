@@ -9,11 +9,16 @@ export default function PostEditor({ post }: { post?: Post }) {
   const router = useRouter();
   const isEditing = !!post;
 
-  const [title, setTitle] = useState(post?.title ?? "");
+  const [titleEn, setTitleEn] = useState(post?.title ?? "");
+  const [titleEs, setTitleEs] = useState(post?.title_es ?? "");
+  const [excerptEn, setExcerptEn] = useState(post?.excerpt ?? "");
+  const [excerptEs, setExcerptEs] = useState(post?.excerpt_es ?? "");
+  const [contentEn, setContentEn] = useState(post?.content ?? "");
+  const [contentEs, setContentEs] = useState(post?.content_es ?? "");
+  const [contentLang, setContentLang] = useState<"en" | "es">("en");
+
   const [slug, setSlug] = useState(post?.slug ?? "");
   const [slugTouched, setSlugTouched] = useState(isEditing);
-  const [excerpt, setExcerpt] = useState(post?.excerpt ?? "");
-  const [content, setContent] = useState(post?.content ?? "");
   const [published, setPublished] = useState(post?.published ?? false);
   const [tab, setTab] = useState<"write" | "preview">("write");
   const [error, setError] = useState<string | null>(null);
@@ -24,8 +29,8 @@ export default function PostEditor({ post }: { post?: Post }) {
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
-  function handleTitleChange(value: string) {
-    setTitle(value);
+  function handleTitleEnChange(value: string) {
+    setTitleEn(value);
     if (!slugTouched) setSlug(slugify(value));
   }
 
@@ -85,10 +90,13 @@ export default function PostEditor({ post }: { post?: Post }) {
     setSubmitting(true);
 
     const payload = {
-      title,
+      title: titleEn,
+      titleEs,
       slug: slugify(slug),
-      excerpt,
-      content,
+      excerpt: excerptEn,
+      excerptEs,
+      content: contentEn,
+      contentEs,
       published,
       featuredImageUrl,
       featuredImageAlt,
@@ -118,29 +126,52 @@ export default function PostEditor({ post }: { post?: Post }) {
     }
   }
 
+  const title = contentLang === "en" ? titleEn : titleEs;
+  const excerpt = contentLang === "en" ? excerptEn : excerptEs;
+  const content = contentLang === "en" ? contentEn : contentEs;
+  const setTitle = contentLang === "en" ? setTitleEn : setTitleEs;
+  const setExcerpt = contentLang === "en" ? setExcerptEn : setExcerptEs;
+  const setContent = contentLang === "en" ? setContentEn : setContentEs;
+
   return (
     <form onSubmit={handleSubmit} className="admin-editor">
-      <div className="form-row form-row-light">
-        <label htmlFor="title">Title</label>
-        <input id="title" value={title} onChange={(e) => handleTitleChange(e.target.value)} required />
+      <div className="admin-lang-tabs">
+        <button type="button" className={contentLang === "en" ? "active" : ""} onClick={() => setContentLang("en")}>
+          English
+        </button>
+        <button type="button" className={contentLang === "es" ? "active" : ""} onClick={() => setContentLang("es")}>
+          Español {titleEs || contentEs ? "" : "(empty — falls back to English)"}
+        </button>
       </div>
 
       <div className="form-row form-row-light">
-        <label htmlFor="slug">Slug</label>
+        <label htmlFor="title">Title{contentLang === "es" ? " (Español)" : ""}</label>
         <input
-          id="slug"
-          value={slug}
-          onChange={(e) => {
-            setSlug(e.target.value);
-            setSlugTouched(true);
-          }}
-          required
+          id="title"
+          value={title}
+          onChange={(e) => (contentLang === "en" ? handleTitleEnChange(e.target.value) : setTitle(e.target.value))}
+          required={contentLang === "en"}
         />
-        <p className="admin-save-hint">/blog/{slugify(slug) || "…"}</p>
       </div>
 
+      {contentLang === "en" && (
+        <div className="form-row form-row-light">
+          <label htmlFor="slug">Slug</label>
+          <input
+            id="slug"
+            value={slug}
+            onChange={(e) => {
+              setSlug(e.target.value);
+              setSlugTouched(true);
+            }}
+            required
+          />
+          <p className="admin-save-hint">/blog/{slugify(slug) || "…"} (same URL for both languages)</p>
+        </div>
+      )}
+
       <div className="form-row form-row-light">
-        <label htmlFor="excerpt">Excerpt (optional)</label>
+        <label htmlFor="excerpt">Excerpt (optional){contentLang === "es" ? " (Español)" : ""}</label>
         <textarea
           id="excerpt"
           rows={2}
@@ -150,47 +181,49 @@ export default function PostEditor({ post }: { post?: Post }) {
         />
       </div>
 
-      <div className="form-row form-row-light">
-        <label>Featured image (optional)</label>
-        {featuredImageUrl ? (
-          <div className="admin-image-preview">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={featuredImageUrl} alt={featuredImageAlt || ""} />
-            <div className="admin-image-preview-actions">
-              <label htmlFor="featured-image-input" className="admin-link-btn">
-                Replace
-              </label>
-              <button type="button" className="admin-link-btn admin-link-danger" onClick={handleRemoveImage}>
-                Remove
-              </button>
+      {contentLang === "en" && (
+        <div className="form-row form-row-light">
+          <label>Featured image (optional)</label>
+          {featuredImageUrl ? (
+            <div className="admin-image-preview">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={featuredImageUrl} alt={featuredImageAlt || ""} />
+              <div className="admin-image-preview-actions">
+                <label htmlFor="featured-image-input" className="admin-link-btn">
+                  Replace
+                </label>
+                <button type="button" className="admin-link-btn admin-link-danger" onClick={handleRemoveImage}>
+                  Remove
+                </button>
+              </div>
             </div>
-          </div>
-        ) : (
-          <label htmlFor="featured-image-input" className="admin-image-upload-btn">
-            {uploading ? "Uploading…" : "Upload an image"}
-          </label>
-        )}
-        <input
-          id="featured-image-input"
-          type="file"
-          accept="image/png,image/jpeg,image/webp,image/gif"
-          onChange={handleImageSelect}
-          disabled={uploading}
-          hidden
-        />
-        {uploadError && <p className="form-error">{uploadError}</p>}
-        {featuredImageUrl && (
+          ) : (
+            <label htmlFor="featured-image-input" className="admin-image-upload-btn">
+              {uploading ? "Uploading…" : "Upload an image"}
+            </label>
+          )}
           <input
-            className="admin-alt-input"
-            value={featuredImageAlt}
-            onChange={(e) => setFeaturedImageAlt(e.target.value)}
-            placeholder="Alt text (describes the image for screen readers and SEO)"
+            id="featured-image-input"
+            type="file"
+            accept="image/png,image/jpeg,image/webp,image/gif"
+            onChange={handleImageSelect}
+            disabled={uploading}
+            hidden
           />
-        )}
-      </div>
+          {uploadError && <p className="form-error">{uploadError}</p>}
+          {featuredImageUrl && (
+            <input
+              className="admin-alt-input"
+              value={featuredImageAlt}
+              onChange={(e) => setFeaturedImageAlt(e.target.value)}
+              placeholder="Alt text (describes the image for screen readers and SEO)"
+            />
+          )}
+        </div>
+      )}
 
       <div className="form-row form-row-light">
-        <label>Content (Markdown)</label>
+        <label>Content (Markdown){contentLang === "es" ? " (Español)" : ""}</label>
         <div className="admin-editor-tabs">
           <button type="button" className={tab === "write" ? "active" : ""} onClick={() => setTab("write")}>
             Write
@@ -205,7 +238,7 @@ export default function PostEditor({ post }: { post?: Post }) {
             rows={18}
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            required
+            required={contentLang === "en"}
           />
         ) : (
           <div className="admin-editor-preview">

@@ -94,6 +94,7 @@
     font-size: 13px;
     letter-spacing: 0.04em;
     text-transform: uppercase;
+    white-space: nowrap;
     padding: 14px 24px;
     border-radius: 2px;
     text-decoration: none;
@@ -184,6 +185,38 @@
     align-items: center;
     gap: 20px;
   }
+
+  .lang-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.03em;
+  }
+  .lang-toggle span {
+    color: var(--graphite-soft);
+  }
+  .lang-toggle button {
+    background: none;
+    border: none;
+    padding: 2px;
+    cursor: pointer;
+    color: var(--graphite-soft);
+  }
+  .lang-toggle button.active {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .lang-toggle.on-dark span {
+    color: var(--white-55);
+  }
+  .lang-toggle.on-dark button {
+    color: var(--white-55);
+  }
+  .lang-toggle.on-dark button.active {
+    color: var(--paper);
+  }
   .menu-toggle {
     display: none;
     background: none;
@@ -199,6 +232,9 @@
     }
     .menu-toggle {
       display: block;
+    }
+    .lang-toggle-slot {
+      display: none;
     }
   }
 
@@ -224,6 +260,9 @@
     .mobile-nav a:focus-visible {
       color: var(--paper);
       background: rgba(127, 184, 217, 0.06);
+    }
+    .mobile-nav-lang {
+      padding: 16px 28px;
     }
   }
 

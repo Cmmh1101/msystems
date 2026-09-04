@@ -1,12 +1,14 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { dictionaries, type Locale } from "@/lib/i18n/dictionary";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type FieldErrors = Partial<Record<"name" | "email" | "message", string>>;
 
-export default function ContactForm() {
+export default function ContactForm({ locale }: { locale: Locale }) {
+  const t = dictionaries[locale].contactForm;
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errors, setErrors] = useState<FieldErrors>({});
 
@@ -16,10 +18,10 @@ export default function ContactForm() {
     const email = String(data.get("email") || "").trim();
     const message = String(data.get("message") || "").trim();
 
-    if (!name) next.name = "Name is required.";
-    if (!email) next.email = "Email is required.";
-    else if (!EMAIL_RE.test(email)) next.email = "Enter a valid email address.";
-    if (!message) next.message = "Tell us a bit about what you need.";
+    if (!name) next.name = t.errors.name;
+    if (!email) next.email = t.errors.email;
+    else if (!EMAIL_RE.test(email)) next.email = t.errors.emailInvalid;
+    if (!message) next.message = t.errors.message;
 
     return next;
   }
@@ -44,6 +46,7 @@ export default function ContactForm() {
           email: data.get("email"),
           company: data.get("company"),
           message: data.get("message"),
+          locale,
         }),
       });
 
@@ -60,7 +63,7 @@ export default function ContactForm() {
     return (
       <div className="contact-form">
         <div className="form-status success" role="status">
-          Got it — we&apos;ll be in touch within one business day.
+          {t.successMessage}
         </div>
       </div>
     );
@@ -69,8 +72,16 @@ export default function ContactForm() {
   return (
     <form className="contact-form" onSubmit={handleSubmit} noValidate>
       <div className="form-row">
-        <label htmlFor="name">Name</label>
-        <input id="name" name="name" type="text" autoComplete="name" placeholder="Your name" aria-invalid={!!errors.name} aria-describedby={errors.name ? "name-error" : undefined} />
+        <label htmlFor="name">{t.nameLabel}</label>
+        <input
+          id="name"
+          name="name"
+          type="text"
+          autoComplete="name"
+          placeholder={t.namePlaceholder}
+          aria-invalid={!!errors.name}
+          aria-describedby={errors.name ? "name-error" : undefined}
+        />
         {errors.name && (
           <p className="form-error" id="name-error">
             {errors.name}
@@ -79,8 +90,16 @@ export default function ContactForm() {
       </div>
 
       <div className="form-row">
-        <label htmlFor="email">Email</label>
-        <input id="email" name="email" type="email" autoComplete="email" placeholder="you@company.com" aria-invalid={!!errors.email} aria-describedby={errors.email ? "email-error" : undefined} />
+        <label htmlFor="email">{t.emailLabel}</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          autoComplete="email"
+          placeholder={t.emailPlaceholder}
+          aria-invalid={!!errors.email}
+          aria-describedby={errors.email ? "email-error" : undefined}
+        />
         {errors.email && (
           <p className="form-error" id="email-error">
             {errors.email}
@@ -89,13 +108,20 @@ export default function ContactForm() {
       </div>
 
       <div className="form-row">
-        <label htmlFor="company">Company (optional)</label>
-        <input id="company" name="company" type="text" autoComplete="organization" placeholder="Your company" />
+        <label htmlFor="company">{t.companyLabel}</label>
+        <input id="company" name="company" type="text" autoComplete="organization" placeholder={t.companyPlaceholder} />
       </div>
 
       <div className="form-row">
-        <label htmlFor="message">What&apos;s slowing you down?</label>
-        <textarea id="message" name="message" rows={4} placeholder="Tell us about your current setup" aria-invalid={!!errors.message} aria-describedby={errors.message ? "message-error" : undefined} />
+        <label htmlFor="message">{t.messageLabel}</label>
+        <textarea
+          id="message"
+          name="message"
+          rows={4}
+          placeholder={t.messagePlaceholder}
+          aria-invalid={!!errors.message}
+          aria-describedby={errors.message ? "message-error" : undefined}
+        />
         {errors.message && (
           <p className="form-error" id="message-error">
             {errors.message}
@@ -104,12 +130,12 @@ export default function ContactForm() {
       </div>
 
       <button type="submit" className="btn btn-primary" disabled={status === "submitting"}>
-        {status === "submitting" ? "Sending…" : "Book a systems audit"}
+        {status === "submitting" ? t.sending : t.submit}
       </button>
 
       {status === "error" && (
         <p className="form-status error" role="alert">
-          Something went wrong on our end — please try again, or email us directly.
+          {t.errorMessage}
         </p>
       )}
     </form>

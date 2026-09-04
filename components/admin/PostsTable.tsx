@@ -37,6 +37,7 @@ export default function PostsTable({ initialPosts }: { initialPosts: Post[] }) {
             <th>Title</th>
             <th>Slug</th>
             <th>Status</th>
+            <th>Languages</th>
             <th>Updated</th>
             <th></th>
           </tr>
@@ -50,6 +51,10 @@ export default function PostsTable({ initialPosts }: { initialPosts: Post[] }) {
                 <span className={`admin-badge ${p.published ? "published" : "draft"}`}>
                   {p.published ? "Published" : "Draft"}
                 </span>
+              </td>
+              <td>
+                <span className="admin-lang-badge">EN</span>
+                <span className={`admin-lang-badge ${p.title_es || p.content_es ? "has-es" : "muted"}`}>ES</span>
               </td>
               <td className="muted">{new Date(p.updated_at).toLocaleDateString()}</td>
               <td>
