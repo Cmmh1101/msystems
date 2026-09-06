@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Space_Grotesk, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import { getLocale } from "@/lib/i18n/server";
 import "./globals.css";
@@ -40,6 +41,9 @@ export const metadata: Metadata = {
   },
 };
 
+const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+const gaEnabled = !!gaMeasurementId && process.env.NODE_ENV === "production";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -49,7 +53,22 @@ export default function RootLayout({
 
   return (
     <html lang={locale} className={`${spaceGrotesk.variable} ${ibmPlexSans.variable} ${ibmPlexMono.variable}`}>
-      <body className="font-body">{children}</body>
+      <body className="font-body">
+        {gaEnabled && (
+          <>
+            <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`} strategy="afterInteractive" />
+            <Script id="ga4-init" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${gaMeasurementId}');
+              `}
+            </Script>
+          </>
+        )}
+        {children}
+      </body>
     </html>
   );
 }

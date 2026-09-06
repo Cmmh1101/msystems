@@ -48,6 +48,7 @@ Next.js MVP for Montano Systems, the new public brand of **In Motion Web Solutio
 | `FROM_EMAIL` | Sending address — must match your verified Resend domain |
 | `SUPABASE_ANON_KEY` | Supabase anon/publishable key, used for the `/admin` login session (safe to expose to the browser — different from the service_role key) |
 | `ADMIN_EMAIL` | The only email allowed to log into `/admin` |
+| `NEXT_PUBLIC_GA_MEASUREMENT_ID` | GA4 Measurement ID (`G-XXXXXXXXXX`). Tracking snippet only loads when `NODE_ENV=production`, so local dev traffic never hits real GA4 data |
 
 ## Deploy (Netlify)
 
