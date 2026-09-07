@@ -24,7 +24,7 @@ Next.js MVP for Montano Systems, the new public brand of **In Motion Web Solutio
    cp .env.example .env.local
    ```
 
-3. Run the Supabase migrations in order, once each, in the Supabase SQL editor: [`0001_create_contacts.sql`](supabase/migrations/0001_create_contacts.sql), [`0002_diagnostic_and_subscription.sql`](supabase/migrations/0002_diagnostic_and_subscription.sql), [`0003_admin_contacts_notes.sql`](supabase/migrations/0003_admin_contacts_notes.sql), [`0004_create_posts.sql`](supabase/migrations/0004_create_posts.sql), [`0005_post_featured_image.sql`](supabase/migrations/0005_post_featured_image.sql), then [`0006_post_translations.sql`](supabase/migrations/0006_post_translations.sql).
+3. Run the Supabase migrations in order, once each, in the Supabase SQL editor: [`0001_create_contacts.sql`](supabase/migrations/0001_create_contacts.sql), [`0002_diagnostic_and_subscription.sql`](supabase/migrations/0002_diagnostic_and_subscription.sql), [`0003_admin_contacts_notes.sql`](supabase/migrations/0003_admin_contacts_notes.sql), [`0004_create_posts.sql`](supabase/migrations/0004_create_posts.sql), [`0005_post_featured_image.sql`](supabase/migrations/0005_post_featured_image.sql), [`0006_post_translations.sql`](supabase/migrations/0006_post_translations.sql), then [`0007_contacts_locale_and_nudge.sql`](supabase/migrations/0007_contacts_locale_and_nudge.sql).
 
 3a. The blog editor's image upload needs a public Storage bucket named `blog-images` (5MB limit, PNG/JPEG/WebP/GIF only). It already exists on the project this app is configured for — if you ever point this app at a fresh Supabase project, create it first: Supabase Dashboard → Storage → New bucket → name `blog-images`, **Public bucket** on.
 
@@ -43,7 +43,8 @@ Next.js MVP for Montano Systems, the new public brand of **In Motion Web Solutio
 | `NEXT_PUBLIC_SITE_URL` | Public site URL, `https://inmotionwebsolutions.com` — domain does not change with the rebrand |
 | `SUPABASE_URL` | Supabase project URL |
 | `SUPABASE_SERVICE_ROLE_KEY` | Server-only Supabase key, used in `/api/contact` — never expose to the client |
-| `RESEND_API_KEY` | Resend API key |
+| `RESEND_API_KEY` | Resend API key — must be **Full access** permission, not "Sending access". A restricted sending-only key can send emails but 401s on any Audiences/Contacts call |
+| `RESEND_AUDIENCE_ID` | The Resend Audience new leads get added to (see "Newsletter & nurture sequence" below) |
 | `NOTIFY_EMAIL` | Where new-lead notifications are sent |
 | `FROM_EMAIL` | Sending address — must match your verified Resend domain |
 | `SUPABASE_ANON_KEY` | Supabase anon/publishable key, used for the `/admin` login session (safe to expose to the browser — different from the service_role key) |
@@ -98,6 +99,16 @@ One-time setup, since this touches two separate Google systems:
 3. **Grant that service account read access to GA4**: from the downloaded JSON, copy `client_email` → GA4 → Admin → **Property Access Management** → Add users → paste the email → role **Viewer**.
 4. **Get the Property ID**: GA4 → Admin → **Property Details** — a plain number, not the same as the Measurement ID from step 1.
 5. Set env vars: `GA4_PROPERTY_ID` (step 4), `GOOGLE_SERVICE_ACCOUNT_EMAIL` (the `client_email` from the JSON), `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY` (the `private_key` from the JSON, newlines and all — the code un-escapes `\n` at runtime, so paste it as the single-line JSON string gave it to you). Never commit the JSON key file itself; only these two extracted fields go into env vars.
+
+### Newsletter & nurture sequence (Phase B)
+
+No n8n, no separate automation platform — deliberately kept inside this same codebase (fewer tools, per what the business actually sells). Two pieces:
+
+**Resend Audience sync.** Every new lead from `/api/contact` and `/api/diagnostic` (when opted in — the diagnostic quiz's checkbox, or the contact form's implicit `newsletter_opt_in` default) gets added to a Resend Audience via `lib/resendAudience.ts`. `/api/unsubscribe` marks them unsubscribed there too, keeping Resend's own suppression list in sync with `contacts.subscribed` — one source of truth for whether someone should hear from you again, checked in both places. Resend Audiences require a **Full access** API key; a restricted "Sending access" key 401s on any audience/contact call (this bit us during setup — the key that was already working fine for transactional email couldn't create the audience at all).
+
+**Day-3 nudge**, via a Netlify Scheduled Function (`netlify/functions/nurture-nudge.mts`, cron `0 14 * * *` — runs daily at 14:00 UTC), not n8n: queries `contacts` for anyone still `status = 'new'`, `subscribed = true`, `created_at` at least 3 days old, and `nudge_sent_at IS NULL`; sends one low-pressure reminder email (in whichever `locale` they signed up in) linking back to booking; then sets `nudge_sent_at` so nobody gets nudged twice. No upper bound on the date window — if the function is ever delayed, it just catches up on the next run rather than silently skipping anyone. Migration 0007 adds the `locale` and `nudge_sent_at` columns this depends on.
+
+Scheduled Functions read the same environment variables as the rest of the site (Netlify makes site-wide env vars available to all functions automatically — nothing extra to configure there). To test locally without waiting 3 real days: insert a contact with a backdated `created_at` directly via the Supabase REST API, then invoke the function's default export directly with `npx tsx` (it's a plain async function, no Netlify CLI required for a logic-only test).
 
 ## English / Spanish (i18n)
 

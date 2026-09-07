@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import { markUnsubscribedInAudience } from "@/lib/resendAudience";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -41,6 +42,8 @@ export async function GET(req: NextRequest) {
         headers: { "Content-Type": "text/html" },
       });
     }
+
+    await markUnsubscribedInAudience(email);
   } catch (err) {
     console.error("unsubscribe: supabase client error", err);
     return new NextResponse(page("Something went wrong", "Please try again in a moment, or email us directly."), {

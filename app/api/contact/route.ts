@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { getResend } from "@/lib/resend";
+import { addContactToAudience } from "@/lib/resendAudience";
 import type { Locale } from "@/lib/i18n/dictionary";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -55,12 +56,15 @@ export async function POST(req: NextRequest) {
       message,
       source: "website",
       status: "new",
+      locale,
     });
 
     if (insertError) {
       console.error("contact form: supabase insert failed", insertError);
       return NextResponse.json({ ok: false, error: "We couldn't save your message. Please try again." }, { status: 500 });
     }
+
+    await addContactToAudience({ email, name });
   } catch (err) {
     console.error("contact form: supabase client error", err);
     return NextResponse.json({ ok: false, error: "We couldn't save your message. Please try again." }, { status: 500 });

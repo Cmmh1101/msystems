@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { getResend } from "@/lib/resend";
+import { addContactToAudience } from "@/lib/resendAudience";
 import { DIAGNOSTIC_QUESTIONS, MAX_SCORE, scoreDiagnostic } from "@/lib/diagnostic";
 import type { Locale } from "@/lib/i18n/dictionary";
 
@@ -107,6 +108,7 @@ export async function POST(req: NextRequest) {
         status: "new",
         tags: ["diagnostic-lead"],
         newsletter_opt_in: newsletterOptIn,
+        locale,
       })
       .select("id")
       .single();
@@ -115,6 +117,9 @@ export async function POST(req: NextRequest) {
       console.error("diagnostic: contacts insert failed", contactError);
     } else {
       contactId = contactRow.id;
+      if (newsletterOptIn) {
+        await addContactToAudience({ email, name });
+      }
     }
 
     const { error: resultError } = await supabase.from("diagnostic_results").insert({
