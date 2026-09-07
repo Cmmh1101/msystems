@@ -24,6 +24,13 @@ export async function POST(req: NextRequest) {
   }
 
   const admin = getSupabaseAdmin();
+
+  let locale = "en";
+  if (contactId) {
+    const { data: sourceContact } = await admin.from("contacts").select("locale").eq("id", contactId).single();
+    if (sourceContact?.locale === "es") locale = "es";
+  }
+
   const { data, error } = await admin
     .from("clients")
     .insert({
@@ -32,6 +39,7 @@ export async function POST(req: NextRequest) {
       company: company || null,
       contact_id: contactId,
       status: "active",
+      locale,
     })
     .select("id")
     .single();

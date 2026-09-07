@@ -11,7 +11,7 @@ export default async function ClientDetailPage({ params }: { params: { id: strin
 
   const { data: client, error: clientError } = await supabase
     .from("clients")
-    .select("id,created_at,contact_id,auth_user_id,name,company,email,status")
+    .select("id,created_at,contact_id,auth_user_id,name,company,email,status,locale")
     .eq("id", params.id)
     .single();
 

@@ -7,6 +7,7 @@ export interface Client {
   company: string | null;
   email: string;
   status: string; // active | paused | offboarded
+  locale: string; // en | es
 }
 
 export interface Project {

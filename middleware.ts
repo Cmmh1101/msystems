@@ -26,19 +26,41 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const isAdminUser = !!user && user.email === process.env.ADMIN_EMAIL;
-  const isLoginPage = request.nextUrl.pathname === "/admin/login";
+  const pathname = request.nextUrl.pathname;
 
-  if (!isAdminUser && !isLoginPage) {
-    return NextResponse.redirect(new URL("/admin/login", request.url));
+  if (pathname.startsWith("/admin")) {
+    const isAdminUser = !!user && user.email === process.env.ADMIN_EMAIL;
+    const isLoginPage = pathname === "/admin/login";
+
+    if (!isAdminUser && !isLoginPage) {
+      return NextResponse.redirect(new URL("/admin/login", request.url));
+    }
+    if (isAdminUser && isLoginPage) {
+      return NextResponse.redirect(new URL("/admin/contacts", request.url));
+    }
+    return response;
   }
-  if (isAdminUser && isLoginPage) {
-    return NextResponse.redirect(new URL("/admin/contacts", request.url));
+
+  if (pathname.startsWith("/portal")) {
+    const isLoginPage = pathname === "/portal/login";
+    const isAuthCallback = pathname.startsWith("/portal/auth/callback");
+
+    // The callback route is what establishes the session in the first place —
+    // there's no user yet when middleware runs for that request.
+    if (isAuthCallback) return response;
+
+    if (!user && !isLoginPage) {
+      return NextResponse.redirect(new URL("/portal/login", request.url));
+    }
+    if (user && isLoginPage) {
+      return NextResponse.redirect(new URL("/portal", request.url));
+    }
+    return response;
   }
 
   return response;
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/admin/:path*", "/portal/:path*"],
 };

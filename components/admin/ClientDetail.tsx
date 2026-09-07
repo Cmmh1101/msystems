@@ -16,6 +16,29 @@ export default function ClientDetail({ client, initialProjects }: { client: Clie
   const [creatingProject, setCreatingProject] = useState(false);
   const [projectError, setProjectError] = useState<string | null>(null);
 
+  const [hasPortalAccess, setHasPortalAccess] = useState(!!client.auth_user_id);
+  const [invitingClient, setInvitingClient] = useState(false);
+  const [inviteMessage, setInviteMessage] = useState<string | null>(null);
+
+  async function handleInvite() {
+    setInvitingClient(true);
+    setInviteMessage(null);
+    try {
+      const res = await fetch(`/api/admin/clients/${client.id}/invite`, { method: "POST" });
+      const json = await res.json();
+      if (!res.ok || !json.ok) {
+        setInviteMessage(json.error || "Failed to send the portal invite.");
+      } else {
+        setHasPortalAccess(true);
+        setInviteMessage("Invite sent.");
+      }
+    } catch {
+      setInviteMessage("Failed to send the portal invite.");
+    } finally {
+      setInvitingClient(false);
+    }
+  }
+
   async function saveClientField(update: Record<string, string>) {
     setSaving(true);
     const res = await fetch(`/api/admin/clients/${client.id}`, {
@@ -110,6 +133,13 @@ export default function ClientDetail({ client, initialProjects }: { client: Clie
           </select>
         </div>
         {saving && <span className="admin-save-hint">Saving…</span>}
+      </div>
+
+      <div className="admin-inline-form" style={{ marginTop: "16px" }}>
+        <button type="button" className="btn btn-primary" onClick={handleInvite} disabled={invitingClient}>
+          {invitingClient ? "Sending…" : hasPortalAccess ? "Resend portal invite" : "Send portal invite"}
+        </button>
+        {inviteMessage && <span className="admin-save-hint">{inviteMessage}</span>}
       </div>
 
       <h2 className="admin-section-heading" style={{ marginTop: "32px" }}>
