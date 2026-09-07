@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 const NAV_ITEMS = [
   { href: "/admin/contacts", label: "Contacts" },
   { href: "/admin/blog", label: "Blog" },
+  { href: "/admin/analytics", label: "Analytics" },
 ];
 
 export default function AdminSidebar() {
