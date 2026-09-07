@@ -115,3 +115,154 @@
   color: var(--graphite-soft);
   padding: 24px 0;
 }
+
+.portal-card-link {
+  display: block;
+  text-decoration: none;
+  transition: border-color 0.15s ease;
+}
+
+.portal-card-link:hover {
+  border-color: var(--brass);
+}
+
+.portal-section-heading {
+  color: var(--ink);
+  font-size: 1.1rem;
+  margin: 36px 0 16px;
+}
+
+.portal-milestone-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.portal-milestone-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: #fff;
+  border: 1px solid var(--paper-2);
+  border-radius: 10px;
+  padding: 16px 20px;
+}
+
+.portal-milestone-item .portal-milestone-badge {
+  color: var(--brass);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.portal-milestone-title {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.portal-page-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.portal-page-head h1 {
+  margin-bottom: 8px;
+}
+
+.portal-link-btn {
+  font-size: 0.85rem;
+  color: var(--ink);
+  text-decoration: underline;
+  white-space: nowrap;
+}
+
+.portal-new-request-form h2 {
+  font-size: 1rem;
+  margin: 0 0 16px;
+}
+
+.portal-new-request-form textarea {
+  width: 100%;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.portal-tickets-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.portal-ticket-card {
+  background: #fff;
+  border: 1px solid var(--paper-2);
+  border-radius: 10px;
+  padding: 18px 20px;
+}
+
+.portal-ticket-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.portal-ticket-title {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.portal-ticket-desc {
+  color: var(--graphite-soft);
+  margin: 8px 0 0;
+  font-size: 0.9rem;
+}
+
+.portal-ticket-meta {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+  align-items: center;
+}
+
+.portal-status-pill {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+  background: var(--paper-2);
+  color: var(--graphite-soft);
+}
+
+.portal-status-client_request,
+.portal-status-needs_review {
+  background: rgba(184, 147, 90, 0.14);
+  color: var(--brass);
+}
+
+.portal-status-to_do,
+.portal-status-in_progress {
+  background: rgba(127, 184, 217, 0.16);
+  color: var(--ink-2);
+}
+
+.portal-status-done {
+  background: rgba(76, 154, 108, 0.14);
+  color: #3f7d54;
+}
+
+.portal-milestone-badge {
+  color: var(--brass);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.portal-billing-note {
+  font-size: 0.8rem;
+  color: var(--graphite-soft);
+  font-style: italic;
+}
