@@ -554,3 +554,110 @@
 .admin-inline-form button {
   padding: 10px 20px;
 }
+
+.kanban-board {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-top: 8px;
+}
+.kanban-column {
+  flex: 0 0 260px;
+  background: var(--paper-2);
+  border: 1px solid rgba(15, 27, 45, 0.1);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 220px);
+}
+.kanban-column.over {
+  border-color: var(--brass);
+  background: rgba(184, 147, 90, 0.06);
+}
+.kanban-column-header {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--graphite-soft);
+  padding: 14px 14px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.kanban-count {
+  background: rgba(15, 27, 45, 0.08);
+  color: var(--graphite);
+  border-radius: 10px;
+  padding: 1px 8px;
+  font-size: 11px;
+}
+.kanban-column-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.kanban-card {
+  background: var(--paper);
+  border: 1px solid rgba(15, 27, 45, 0.1);
+  border-radius: 3px;
+  font-size: 13px;
+}
+.kanban-card.dragging {
+  opacity: 0.6;
+  box-shadow: 0 4px 12px rgba(15, 27, 45, 0.15);
+}
+.kanban-card-drag {
+  padding: 10px 12px 6px;
+  cursor: grab;
+}
+.kanban-card-title {
+  color: var(--ink);
+  line-height: 1.4;
+}
+.kanban-card-desc {
+  color: var(--graphite-soft);
+  font-size: 12px;
+  margin-top: 4px;
+  line-height: 1.5;
+}
+.kanban-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px 8px;
+}
+.kanban-milestone-toggle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--graphite-soft);
+  cursor: pointer;
+}
+.kanban-new-ticket {
+  padding: 10px;
+  flex-shrink: 0;
+}
+.kanban-new-ticket input {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  padding: 8px 10px;
+  border: 1px dashed rgba(15, 27, 45, 0.2);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--ink);
+}
+.kanban-new-ticket input:focus {
+  outline: none;
+  border-style: solid;
+  border-color: var(--brass);
+  background: var(--paper);
+}

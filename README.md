@@ -24,7 +24,7 @@ Next.js MVP for Montano Systems, the new public brand of **In Motion Web Solutio
    cp .env.example .env.local
    ```
 
-3. Run the Supabase migrations in order, once each, in the Supabase SQL editor: [`0001_create_contacts.sql`](supabase/migrations/0001_create_contacts.sql), [`0002_diagnostic_and_subscription.sql`](supabase/migrations/0002_diagnostic_and_subscription.sql), [`0003_admin_contacts_notes.sql`](supabase/migrations/0003_admin_contacts_notes.sql), [`0004_create_posts.sql`](supabase/migrations/0004_create_posts.sql), [`0005_post_featured_image.sql`](supabase/migrations/0005_post_featured_image.sql), [`0006_post_translations.sql`](supabase/migrations/0006_post_translations.sql), [`0007_contacts_locale_and_nudge.sql`](supabase/migrations/0007_contacts_locale_and_nudge.sql), then [`0008_clients_and_projects.sql`](supabase/migrations/0008_clients_and_projects.sql).
+3. Run the Supabase migrations in order, once each, in the Supabase SQL editor: [`0001_create_contacts.sql`](supabase/migrations/0001_create_contacts.sql), [`0002_diagnostic_and_subscription.sql`](supabase/migrations/0002_diagnostic_and_subscription.sql), [`0003_admin_contacts_notes.sql`](supabase/migrations/0003_admin_contacts_notes.sql), [`0004_create_posts.sql`](supabase/migrations/0004_create_posts.sql), [`0005_post_featured_image.sql`](supabase/migrations/0005_post_featured_image.sql), [`0006_post_translations.sql`](supabase/migrations/0006_post_translations.sql), [`0007_contacts_locale_and_nudge.sql`](supabase/migrations/0007_contacts_locale_and_nudge.sql), [`0008_clients_and_projects.sql`](supabase/migrations/0008_clients_and_projects.sql), then [`0009_tickets.sql`](supabase/migrations/0009_tickets.sql).
 
 3a. The blog editor's image upload needs a public Storage bucket named `blog-images` (5MB limit, PNG/JPEG/WebP/GIF only). It already exists on the project this app is configured for — if you ever point this app at a fresh Supabase project, create it first: Supabase Dashboard → Storage → New bucket → name `blog-images`, **Public bucket** on.
 
@@ -112,13 +112,15 @@ Scheduled Functions read the same environment variables as the rest of the site 
 
 ## Client portal / PM (Phase D — in progress)
 
-Full plan in [`docs/phase-d-client-portal-spec.md`](docs/phase-d-client-portal-spec.md). Built so far (spec's step 1 of 6):
+Full plan in [`docs/phase-d-client-portal-spec.md`](docs/phase-d-client-portal-spec.md). Built so far (spec's steps 1–2 of 6):
 
 `clients` and `projects` tables (migration 0008), both service_role-only for now — RLS is enabled on both but has no policies yet; client-role policies get added once client portal auth exists (spec step 3). `/admin/clients` lists clients with a live project count per row (`projects(count)` embedded select, not a separate query per row); `/admin/clients/[id]` handles inline editing of name/email/company/status plus adding/managing that client's projects.
 
 The primary path into this is `/admin/contacts` → **"Convert to client"** on any contact row, which pre-fills `/admin/clients/new` via query params and, on submit, both creates the client with `contact_id` pointing back to the original lead **and** flips that contact's `status` to `won` — so the CRM funnel stays accurate without a second manual step. A client can also be created from scratch with no originating contact (referrals, etc.) via the plain "New client" button.
 
-Not yet built: tickets/kanban board, client-facing auth and portal, the Stripe billing gate, and public case studies — see the spec's suggested build order for what's next.
+`tickets` table (migration 0009) + an admin-only Kanban board at `/admin/projects/[id]` (linked from "View board" on each project row), drag-and-drop via `@dnd-kit/core`. Five columns matching the spec (Client Request, Needs Review, To Do, In Progress, Done); every ticket is currently `created_by_role: 'admin'` since client-facing creation doesn't exist yet (spec step 4). Dragging a card between columns optimistically updates the UI and PATCHes `column_status`, reverting on failure. Each card has an inline "Milestone" checkbox — toggling it on/off sets/clears `published_at`, which will drive the client portal's curated achievements feed once that's built. Tickets add directly into any column via a small inline input at the bottom of each — nothing gated by `billing_status` yet, since that logic only matters once clients can submit their own requests (spec step 5, the Stripe gate).
+
+Not yet built: client-facing auth and portal, the Stripe billing gate, and public case studies — see the spec's suggested build order for what's next.
 
 ## English / Spanish (i18n)
 

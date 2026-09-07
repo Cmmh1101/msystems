@@ -139,6 +139,7 @@ export default function ClientDetail({ client, initialProjects }: { client: Clie
                 <th>Project</th>
                 <th>Status</th>
                 <th>Created</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -159,6 +160,11 @@ export default function ClientDetail({ client, initialProjects }: { client: Clie
                     </select>
                   </td>
                   <td className="muted">{new Date(p.created_at).toLocaleDateString()}</td>
+                  <td>
+                    <a className="admin-link-btn" href={`/admin/projects/${p.id}`}>
+                      View board
+                    </a>
+                  </td>
                 </tr>
               ))}
             </tbody>
