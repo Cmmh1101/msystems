@@ -110,6 +110,7 @@ export default function ContactsTable({ initialContacts }: { initialContacts: Co
                 <th>Status</th>
                 <th>Subscribed</th>
                 <th>Notes</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -143,6 +144,14 @@ export default function ContactsTable({ initialContacts }: { initialContacts: Co
                       placeholder="Add a note…"
                     />
                     {savingId === c.id && <span className="admin-save-hint">Saving…</span>}
+                  </td>
+                  <td>
+                    <a
+                      className="admin-link-btn"
+                      href={`/admin/clients/new?contactId=${c.id}&name=${encodeURIComponent(c.name)}&email=${encodeURIComponent(c.email)}&company=${encodeURIComponent(c.company ?? "")}`}
+                    >
+                      Convert to client
+                    </a>
                   </td>
                 </tr>
               ))}

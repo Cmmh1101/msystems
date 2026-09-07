@@ -24,7 +24,7 @@ Next.js MVP for Montano Systems, the new public brand of **In Motion Web Solutio
    cp .env.example .env.local
    ```
 
-3. Run the Supabase migrations in order, once each, in the Supabase SQL editor: [`0001_create_contacts.sql`](supabase/migrations/0001_create_contacts.sql), [`0002_diagnostic_and_subscription.sql`](supabase/migrations/0002_diagnostic_and_subscription.sql), [`0003_admin_contacts_notes.sql`](supabase/migrations/0003_admin_contacts_notes.sql), [`0004_create_posts.sql`](supabase/migrations/0004_create_posts.sql), [`0005_post_featured_image.sql`](supabase/migrations/0005_post_featured_image.sql), [`0006_post_translations.sql`](supabase/migrations/0006_post_translations.sql), then [`0007_contacts_locale_and_nudge.sql`](supabase/migrations/0007_contacts_locale_and_nudge.sql).
+3. Run the Supabase migrations in order, once each, in the Supabase SQL editor: [`0001_create_contacts.sql`](supabase/migrations/0001_create_contacts.sql), [`0002_diagnostic_and_subscription.sql`](supabase/migrations/0002_diagnostic_and_subscription.sql), [`0003_admin_contacts_notes.sql`](supabase/migrations/0003_admin_contacts_notes.sql), [`0004_create_posts.sql`](supabase/migrations/0004_create_posts.sql), [`0005_post_featured_image.sql`](supabase/migrations/0005_post_featured_image.sql), [`0006_post_translations.sql`](supabase/migrations/0006_post_translations.sql), [`0007_contacts_locale_and_nudge.sql`](supabase/migrations/0007_contacts_locale_and_nudge.sql), then [`0008_clients_and_projects.sql`](supabase/migrations/0008_clients_and_projects.sql).
 
 3a. The blog editor's image upload needs a public Storage bucket named `blog-images` (5MB limit, PNG/JPEG/WebP/GIF only). It already exists on the project this app is configured for — if you ever point this app at a fresh Supabase project, create it first: Supabase Dashboard → Storage → New bucket → name `blog-images`, **Public bucket** on.
 
@@ -109,6 +109,16 @@ No n8n, no separate automation platform — deliberately kept inside this same c
 **Day-3 nudge**, via a Netlify Scheduled Function (`netlify/functions/nurture-nudge.mts`, cron `0 14 * * *` — runs daily at 14:00 UTC), not n8n: queries `contacts` for anyone still `status = 'new'`, `subscribed = true`, `created_at` at least 3 days old, and `nudge_sent_at IS NULL`; sends one low-pressure reminder email (in whichever `locale` they signed up in) linking back to booking; then sets `nudge_sent_at` so nobody gets nudged twice. No upper bound on the date window — if the function is ever delayed, it just catches up on the next run rather than silently skipping anyone. Migration 0007 adds the `locale` and `nudge_sent_at` columns this depends on.
 
 Scheduled Functions read the same environment variables as the rest of the site (Netlify makes site-wide env vars available to all functions automatically — nothing extra to configure there). To test locally without waiting 3 real days: insert a contact with a backdated `created_at` directly via the Supabase REST API, then invoke the function's default export directly with `npx tsx` (it's a plain async function, no Netlify CLI required for a logic-only test).
+
+## Client portal / PM (Phase D — in progress)
+
+Full plan in [`docs/phase-d-client-portal-spec.md`](docs/phase-d-client-portal-spec.md). Built so far (spec's step 1 of 6):
+
+`clients` and `projects` tables (migration 0008), both service_role-only for now — RLS is enabled on both but has no policies yet; client-role policies get added once client portal auth exists (spec step 3). `/admin/clients` lists clients with a live project count per row (`projects(count)` embedded select, not a separate query per row); `/admin/clients/[id]` handles inline editing of name/email/company/status plus adding/managing that client's projects.
+
+The primary path into this is `/admin/contacts` → **"Convert to client"** on any contact row, which pre-fills `/admin/clients/new` via query params and, on submit, both creates the client with `contact_id` pointing back to the original lead **and** flips that contact's `status` to `won` — so the CRM funnel stays accurate without a second manual step. A client can also be created from scratch with no originating contact (referrals, etc.) via the plain "New client" button.
+
+Not yet built: tickets/kanban board, client-facing auth and portal, the Stripe billing gate, and public case studies — see the spec's suggested build order for what's next.
 
 ## English / Spanish (i18n)
 

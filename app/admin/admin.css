@@ -519,3 +519,38 @@
     grid-template-columns: 1fr;
   }
 }
+
+.admin-client-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  max-width: 900px;
+  align-items: end;
+  background: var(--paper);
+  border: 1px solid rgba(15, 27, 45, 0.1);
+  border-radius: 4px;
+  padding: 24px;
+}
+.admin-client-fields .form-row {
+  margin-bottom: 0;
+}
+
+.admin-inline-form {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.admin-inline-form input {
+  flex: 1;
+  max-width: 360px;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  padding: 10px 12px;
+  border: 1px solid rgba(15, 27, 45, 0.15);
+  border-radius: 3px;
+  background: var(--paper);
+  color: var(--ink);
+}
+.admin-inline-form button {
+  padding: 10px 20px;
+}
