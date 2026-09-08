@@ -661,3 +661,46 @@
   border-color: var(--brass);
   background: var(--paper);
 }
+.kanban-card-billing {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px 8px;
+  flex-wrap: wrap;
+}
+.kanban-billing-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 2px 7px;
+  border-radius: 3px;
+}
+.kanban-billing-badge.quoted {
+  background: rgba(184, 147, 90, 0.15);
+  color: var(--brass);
+}
+.kanban-billing-badge.paid {
+  background: rgba(76, 154, 108, 0.15);
+  color: #3f7d54;
+}
+.kanban-quote-form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 12px 10px;
+}
+.kanban-quote-form input {
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  padding: 6px 8px;
+  border: 1px solid rgba(15, 27, 45, 0.15);
+  border-radius: 3px;
+  background: var(--paper);
+  color: var(--ink);
+}
+.kanban-quote-form-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}

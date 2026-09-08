@@ -6,7 +6,7 @@ import { COLUMN_LABELS, type Ticket } from "@/lib/tickets";
 
 function billingNote(ticket: Ticket): string | null {
   if (ticket.billing_status === "needs_quote") return "Awaiting a quote from us";
-  if (ticket.billing_status === "quoted") return "Awaiting payment";
+  if (ticket.billing_status === "paid") return "Paid";
   return null;
 }
 
@@ -109,10 +109,15 @@ export default function ClientTicketBoard({ project, initialTickets }: { project
                 <span className={`portal-status-pill portal-status-${t.column_status}`}>{COLUMN_LABELS[t.column_status]}</span>
               </div>
               {t.description && <p className="portal-ticket-desc">{t.description}</p>}
-              {(t.is_milestone || billingNote(t)) && (
+              {(t.is_milestone || billingNote(t) || (t.billing_status === "quoted" && t.stripe_payment_link)) && (
                 <div className="portal-ticket-meta">
                   {t.is_milestone && <span className="portal-milestone-badge">★ Milestone</span>}
                   {billingNote(t) && <span className="portal-billing-note">{billingNote(t)}</span>}
+                  {t.billing_status === "quoted" && t.stripe_payment_link && (
+                    <a href={t.stripe_payment_link} target="_blank" rel="noreferrer" className="btn btn-primary portal-pay-btn">
+                      Pay now
+                    </a>
+                  )}
                 </div>
               )}
             </div>

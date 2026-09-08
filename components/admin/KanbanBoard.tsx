@@ -6,14 +6,103 @@ import { CSS } from "@dnd-kit/utilities";
 import type { Project, Client } from "@/lib/clients";
 import { COLUMN_STATUSES, COLUMN_LABELS, type Ticket } from "@/lib/tickets";
 
+function BillingSection({
+  ticket,
+  onQuote,
+}: {
+  ticket: Ticket;
+  onQuote: (id: string, amount: number, description: string) => Promise<boolean>;
+}) {
+  const [quoting, setQuoting] = useState(false);
+  const [amount, setAmount] = useState("");
+  const [description, setDescription] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  if (ticket.billing_status === "paid") {
+    return (
+      <div className="kanban-card-billing">
+        <span className="kanban-billing-badge paid">Paid</span>
+      </div>
+    );
+  }
+
+  if (ticket.billing_status === "quoted") {
+    return (
+      <div className="kanban-card-billing">
+        <span className="kanban-billing-badge quoted">Awaiting payment</span>
+        {ticket.stripe_payment_link && (
+          <a href={ticket.stripe_payment_link} target="_blank" rel="noreferrer" className="admin-link-btn">
+            Payment link
+          </a>
+        )}
+      </div>
+    );
+  }
+
+  if (!quoting) {
+    return (
+      <div className="kanban-card-billing">
+        <button type="button" className="admin-link-btn" onClick={() => setQuoting(true)}>
+          Quote a fee…
+        </button>
+      </div>
+    );
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const parsed = parseFloat(amount);
+    if (!Number.isFinite(parsed) || parsed <= 0) {
+      setError("Enter a valid amount.");
+      return;
+    }
+    setError(null);
+    setSubmitting(true);
+    const success = await onQuote(ticket.id, parsed, description.trim());
+    setSubmitting(false);
+    if (success) {
+      setQuoting(false);
+    } else {
+      setError("Failed to create the payment link.");
+    }
+  }
+
+  return (
+    <form className="kanban-quote-form" onSubmit={handleSubmit}>
+      <input
+        type="number"
+        step="0.01"
+        min="0.01"
+        placeholder="Amount ($)"
+        value={amount}
+        onChange={(e) => setAmount(e.target.value)}
+        autoFocus
+      />
+      <input type="text" placeholder="Description (optional)" value={description} onChange={(e) => setDescription(e.target.value)} />
+      <div className="kanban-quote-form-actions">
+        <button type="submit" className="admin-link-btn" disabled={submitting}>
+          {submitting ? "Creating…" : "Send quote"}
+        </button>
+        <button type="button" className="admin-link-btn" onClick={() => setQuoting(false)} disabled={submitting}>
+          Cancel
+        </button>
+      </div>
+      {error && <p className="form-error">{error}</p>}
+    </form>
+  );
+}
+
 function TicketCard({
   ticket,
   onToggleMilestone,
   onDelete,
+  onQuote,
 }: {
   ticket: Ticket;
   onToggleMilestone: (id: string, value: boolean) => void;
   onDelete: (id: string) => void;
+  onQuote: (id: string, amount: number, description: string) => Promise<boolean>;
 }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: ticket.id });
   const style = transform
@@ -26,6 +115,7 @@ function TicketCard({
         <div className="kanban-card-title">{ticket.title}</div>
         {ticket.description && <div className="kanban-card-desc">{ticket.description}</div>}
       </div>
+      <BillingSection ticket={ticket} onQuote={onQuote} />
       <div className="kanban-card-footer">
         <label className="kanban-milestone-toggle">
           <input
@@ -71,12 +161,14 @@ function Column({
   onAddTicket,
   onToggleMilestone,
   onDelete,
+  onQuote,
 }: {
   status: string;
   tickets: Ticket[];
   onAddTicket: (status: string, title: string) => void;
   onToggleMilestone: (id: string, value: boolean) => void;
   onDelete: (id: string) => void;
+  onQuote: (id: string, amount: number, description: string) => Promise<boolean>;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: status });
 
@@ -87,7 +179,7 @@ function Column({
       </div>
       <div className="kanban-column-body">
         {tickets.map((t) => (
-          <TicketCard key={t.id} ticket={t} onToggleMilestone={onToggleMilestone} onDelete={onDelete} />
+          <TicketCard key={t.id} ticket={t} onToggleMilestone={onToggleMilestone} onDelete={onDelete} onQuote={onQuote} />
         ))}
       </div>
       <NewTicketInput onAdd={(title) => onAddTicket(status, title)} />
@@ -184,6 +276,30 @@ export default function KanbanBoard({
     if (!res.ok) console.error("Failed to delete ticket", id);
   }
 
+  async function handleQuote(id: string, amount: number, description: string): Promise<boolean> {
+    try {
+      const res = await fetch(`/api/admin/tickets/${id}/quote`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount, description }),
+      });
+      const json = await res.json();
+
+      if (!res.ok || !json.ok) {
+        console.error("Failed to create quote for", id, json.error);
+        return false;
+      }
+
+      setTickets((prev) =>
+        prev.map((t) => (t.id === id ? { ...t, billing_status: "quoted", stripe_payment_link: json.url } : t))
+      );
+      return true;
+    } catch (err) {
+      console.error("Failed to create quote for", id, err);
+      return false;
+    }
+  }
+
   return (
     <>
       <div className="admin-page-head">
@@ -209,6 +325,7 @@ export default function KanbanBoard({
               onAddTicket={handleAddTicket}
               onToggleMilestone={handleToggleMilestone}
               onDelete={handleDelete}
+              onQuote={handleQuote}
             />
           ))}
         </div>

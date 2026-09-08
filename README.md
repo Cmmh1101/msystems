@@ -53,6 +53,8 @@ Next.js MVP for Montano Systems, the new public brand of **In Motion Web Solutio
 | `GA4_PROPERTY_ID` | Numeric GA4 Property ID (different from the Measurement ID) — used by `/admin/analytics` to query the GA4 Data API |
 | `GOOGLE_SERVICE_ACCOUNT_EMAIL` | Service account email with Viewer access on the GA4 property |
 | `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY` | Service account private key (from its JSON key file) — server-only, never exposed to the client |
+| `STRIPE_SECRET_KEY` | Stripe secret (or restricted) key — account-wide, safe to reuse across other sites/products on the same Stripe account. Only needs Checkout Session write access; no publishable key is needed since checkout is server-created, not embedded Stripe.js |
+| `STRIPE_WEBHOOK_SECRET` | Signing secret for the `/api/webhooks/stripe` endpoint specifically — **not** reusable from another site's webhook endpoint on the same Stripe account, since Stripe issues one per registered endpoint URL. Created in Stripe Dashboard → Developers → Webhooks → Add endpoint, listening for `checkout.session.completed`, only after this endpoint is deployed and reachable |
 
 ## Deploy (Netlify)
 
@@ -112,7 +114,7 @@ Scheduled Functions read the same environment variables as the rest of the site 
 
 ## Client portal / PM (Phase D — in progress)
 
-Full plan in [`docs/phase-d-client-portal-spec.md`](docs/phase-d-client-portal-spec.md). Built so far (spec's steps 1–4 and 6 of 6 — step 5, the Stripe billing gate, is intentionally last since it needs Stripe API keys):
+Full plan in [`docs/phase-d-client-portal-spec.md`](docs/phase-d-client-portal-spec.md). All 6 steps are built:
 
 `clients` and `projects` tables (migration 0008), both service_role-only for now — RLS is enabled on both but has no policies yet; client-role policies get added once client portal auth exists (spec step 3). `/admin/clients` lists clients with a live project count per row (`projects(count)` embedded select, not a separate query per row); `/admin/clients/[id]` handles inline editing of name/email/company/status plus adding/managing that client's projects.
 
@@ -126,7 +128,9 @@ The primary path into this is `/admin/contacts` → **"Convert to client"** on a
 
 **Public case studies** (migration 0011) — `case_studies` table (title/summary/details, optional bilingual `_es` fields following the blog's fallback-to-English pattern, nullable `client_id`/`project_id` to allow anonymized studies, `published`/`published_at`). Admin authoring at `/admin/case-studies` reuses the blog's exact editor shape (Markdown write/preview tabs, EN/ES language tabs, slug auto-derived from the English title) plus a client/project picker scoped by the selected client. The public `/results` page lists published case studies as cards linking to `/results/[slug]`, which renders the full Markdown write-up — same `force-no-store` caching fix as `/blog` so publish/unpublish never shows stale. A `ResultsTeaser` server component surfaces the 3 most recent published case studies between the homepage's About and CTA sections, and returns nothing at all if there are zero published yet (no empty section pre-launch). "Results" was added to the header/footer nav and dictionary in both languages.
 
-Not yet built: the Stripe billing gate (step 5, needs Stripe API keys before it can be built) — see the spec's suggested build order for what's next.
+**Stripe billing gate** (step 5) — on the admin Kanban board, any ticket that isn't already quoted or paid gets a "Quote a fee…" control on its card; entering an amount and optional description calls `/api/admin/tickets/[id]/quote`, which creates a Stripe Checkout Session with an ad-hoc `price_data` line item (no pre-created Stripe Products/Prices needed — each quote is a one-off amount, matching the spec's per-ticket fee model), stores the session URL on `tickets.stripe_payment_link`, and sets `billing_status: 'quoted'`. The client portal shows a "Pay now" button linking straight to that Checkout URL. `/api/webhooks/stripe` verifies the `stripe-signature` header against `STRIPE_WEBHOOK_SECRET` (rejecting anything that doesn't match) and, on `checkout.session.completed`, reads the ticket id back out of the session's `metadata` and flips `billing_status: 'paid'` + `column_status: 'to_do'` automatically — no manual step once the client pays. The Stripe secret key is shared with other sites on the same Stripe account (safe — it's account-wide, not site-specific), but the webhook signing secret is unique to this endpoint's URL and can't be reused from elsewhere.
+
+All 6 steps of Phase D are now complete.
 
 ## English / Spanish (i18n)
 

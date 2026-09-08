@@ -266,3 +266,8 @@
   color: var(--graphite-soft);
   font-style: italic;
 }
+
+.portal-pay-btn {
+  padding: 6px 14px;
+  font-size: 0.8rem;
+}
