@@ -18,6 +18,7 @@ export default function Header({ locale }: { locale: Locale }) {
           <a href="/#modules">{t.services}</a>
           <a href="/#about">{t.about}</a>
           <a href="/blog">{t.blog}</a>
+          <a href="/results">{t.results}</a>
           <a href="/#cta">{t.contact}</a>
         </nav>
         <div className="nav-cta">
@@ -49,6 +50,9 @@ export default function Header({ locale }: { locale: Locale }) {
           </a>
           <a href="/blog" onClick={() => setIsMenuOpen(false)}>
             {t.blog}
+          </a>
+          <a href="/results" onClick={() => setIsMenuOpen(false)}>
+            {t.results}
           </a>
           <a href="/#cta" onClick={() => setIsMenuOpen(false)}>
             {t.contact}

@@ -7,6 +7,7 @@ const en = {
     services: "Services",
     about: "About",
     blog: "Blog",
+    results: "Results",
     contact: "Contact",
     freeCheck: "Free systems check",
   },
@@ -103,6 +104,7 @@ const en = {
     services: "Services",
     about: "About",
     blog: "Blog",
+    results: "Results",
     freeCheck: "Free Systems Check",
     contact: "Contact",
     copyright: "In Motion Web Solutions, LLC — dba Montano Systems",
@@ -152,6 +154,14 @@ const en = {
     empty: "Nothing published yet — check back soon.",
     backToBlog: "← Back to blog",
   },
+  results: {
+    eyebrow: "Proof, not promises",
+    heading: "Results",
+    empty: "Nothing published yet — check back soon.",
+    backToResults: "← Back to results",
+    teaserHeading: "Real systems, real results",
+    seeAll: "See all results →",
+  },
 };
 
 const es: typeof en = {
@@ -159,6 +169,7 @@ const es: typeof en = {
     services: "Servicios",
     about: "Nosotros",
     blog: "Blog",
+    results: "Resultados",
     contact: "Contacto",
     freeCheck: "Diagnóstico gratis",
   },
@@ -255,6 +266,7 @@ const es: typeof en = {
     services: "Servicios",
     about: "Nosotros",
     blog: "Blog",
+    results: "Resultados",
     freeCheck: "Diagnóstico Gratis",
     contact: "Contacto",
     copyright: "In Motion Web Solutions, LLC — dba Montano Systems",
@@ -303,6 +315,14 @@ const es: typeof en = {
     heading: "Blog",
     empty: "Todavía no hay nada publicado — vuelve pronto.",
     backToBlog: "← Volver al blog",
+  },
+  results: {
+    eyebrow: "Pruebas, no promesas",
+    heading: "Resultados",
+    empty: "Todavía no hay nada publicado — vuelve pronto.",
+    backToResults: "← Volver a resultados",
+    teaserHeading: "Sistemas reales, resultados reales",
+    seeAll: "Ver todos los resultados →",
   },
 };
 

@@ -973,6 +973,18 @@
     border-radius: 4px;
     margin: 24px 0;
   }
+
+  /* RESULTS TEASER (homepage) */
+  .results-teaser {
+    background: var(--paper-2);
+  }
+  .results-teaser h2 {
+    color: var(--ink);
+    margin-bottom: 32px;
+  }
+  .results-teaser .blog-list-grid {
+    margin-bottom: 32px;
+  }
 }
 
 @media print {
