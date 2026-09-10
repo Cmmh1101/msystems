@@ -1,11 +1,13 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 
 export default function PortalLoginForm() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -35,6 +37,23 @@ export default function PortalLoginForm() {
     }
   }
 
+  async function handleGoogleSignIn() {
+    setError(null);
+    setGoogleLoading(true);
+
+    const supabase = getSupabaseBrowser();
+    const { error: oauthError } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: `${window.location.origin}/portal/auth/callback` },
+    });
+
+    if (oauthError) {
+      setError("Google sign-in isn't available right now. Please try email instead.");
+      setGoogleLoading(false);
+    }
+    // On success the browser navigates to Google, so nothing else to do here.
+  }
+
   return (
     <div className="portal-login-page">
       <div className="portal-login-card">
@@ -45,6 +64,14 @@ export default function PortalLoginForm() {
           </p>
         ) : (
           <>
+            <button type="button" className="btn btn-ghost on-light portal-google-btn" onClick={handleGoogleSignIn} disabled={googleLoading}>
+              {googleLoading ? "Redirecting…" : "Continue with Google"}
+            </button>
+
+            <div className="portal-login-divider">
+              <span>or</span>
+            </div>
+
             <p className="portal-sub">Enter your email and we&rsquo;ll send you a link to sign in.</p>
             <form onSubmit={handleSubmit}>
               <div className="form-row form-row-light">

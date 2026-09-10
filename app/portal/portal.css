@@ -34,6 +34,27 @@
   margin-top: 8px;
 }
 
+.portal-google-btn {
+  margin-top: 0;
+}
+
+.portal-login-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  color: var(--graphite-soft);
+  font-size: 0.85rem;
+}
+
+.portal-login-divider::before,
+.portal-login-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--paper-2);
+}
+
 .portal-success {
   background: var(--paper-2);
   border-radius: 8px;

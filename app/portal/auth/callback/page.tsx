@@ -7,30 +7,46 @@ import "../../portal.css";
 
 export default function PortalAuthCallbackPage() {
   const router = useRouter();
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function run() {
-      // Supabase's admin-generated magic links redirect with the session in the
-      // URL hash fragment (#access_token=...), never as query params — fragments
-      // are never sent to the server, so this exchange has to happen client-side.
+      const supabase = getSupabaseBrowser();
+
+      // Supabase's admin-generated magic links redirect with the session as
+      // #access_token=... in the URL hash fragment (never query params — and
+      // fragments never reach the server, so this has to run client-side).
+      // Google sign-in instead uses the PKCE flow, landing here with ?code=...
       const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
       const accessToken = hashParams.get("access_token");
       const refreshToken = hashParams.get("refresh_token");
+      const code = new URLSearchParams(window.location.search).get("code");
 
-      if (!accessToken || !refreshToken) {
-        setError(true);
+      let sessionError = null;
+
+      if (accessToken && refreshToken) {
+        const { error } = await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
+        sessionError = error;
+      } else if (code) {
+        const { error } = await supabase.auth.exchangeCodeForSession(code);
+        sessionError = error;
+      } else {
+        setError("That link is no longer valid.");
         return;
       }
 
-      const supabase = getSupabaseBrowser();
-      const { error: sessionError } = await supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: refreshToken,
-      });
-
       if (sessionError) {
-        setError(true);
+        setError("That link is no longer valid.");
+        return;
+      }
+
+      // The portal has no self-signup: only an email that matches an existing
+      // client record is allowed through, regardless of how they signed in.
+      const claimRes = await fetch("/api/portal/claim", { method: "POST" });
+      const claimJson = await claimRes.json();
+
+      if (!claimRes.ok || !claimJson.ok) {
+        setError(claimJson.error || "This account isn't authorized for the client portal.");
         return;
       }
 
@@ -45,9 +61,9 @@ export default function PortalAuthCallbackPage() {
       <div className="portal-login-card">
         {error ? (
           <>
-            <h1>Login link expired</h1>
+            <h1>Couldn&rsquo;t sign you in</h1>
             <p className="portal-sub">
-              That link is no longer valid. <a href="/portal/login">Request a new one</a>.
+              {error} <a href="/portal/login">Try again</a>.
             </p>
           </>
         ) : (
