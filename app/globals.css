@@ -186,6 +186,11 @@
     gap: 20px;
   }
 
+  .nav-portal-link {
+    padding: 8px 14px;
+    font-size: 11px;
+  }
+
   .lang-toggle {
     display: flex;
     align-items: center;
@@ -234,6 +239,9 @@
       display: block;
     }
     .lang-toggle-slot {
+      display: none;
+    }
+    .nav-portal-link {
       display: none;
     }
   }

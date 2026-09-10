@@ -10,6 +10,7 @@ const en = {
     results: "Results",
     contact: "Contact",
     freeCheck: "Free systems check",
+    clientPortal: "Client Portal",
   },
   hero: {
     eyebrow: "Systems architecture for growing businesses",
@@ -105,6 +106,7 @@ const en = {
     about: "About",
     blog: "Blog",
     results: "Results",
+    clientPortal: "Client Portal",
     freeCheck: "Free Systems Check",
     contact: "Contact",
     copyright: "In Motion Web Solutions, LLC — dba Montano Systems",
@@ -172,6 +174,7 @@ const es: typeof en = {
     results: "Resultados",
     contact: "Contacto",
     freeCheck: "Diagnóstico gratis",
+    clientPortal: "Portal de Clientes",
   },
   hero: {
     eyebrow: "Arquitectura de sistemas para negocios en crecimiento",
@@ -267,6 +270,7 @@ const es: typeof en = {
     about: "Nosotros",
     blog: "Blog",
     results: "Resultados",
+    clientPortal: "Portal de Clientes",
     freeCheck: "Diagnóstico Gratis",
     contact: "Contacto",
     copyright: "In Motion Web Solutions, LLC — dba Montano Systems",

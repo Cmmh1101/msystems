@@ -15,6 +15,7 @@ export default function Footer() {
           <a href="/#about">{t.about}</a>
           <a href="/blog">{t.blog}</a>
           <a href="/results">{t.results}</a>
+          <a href="/portal/login">{t.clientPortal}</a>
           <a href="/diagnostic">{t.freeCheck}</a>
           <a href="/#cta">{t.contact}</a>
         </nav>

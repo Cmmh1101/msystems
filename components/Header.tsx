@@ -22,6 +22,9 @@ export default function Header({ locale }: { locale: Locale }) {
           <a href="/#cta">{t.contact}</a>
         </nav>
         <div className="nav-cta">
+          <a href="/portal/login" className="btn btn-ghost nav-portal-link">
+            {t.clientPortal}
+          </a>
           <span className="lang-toggle-slot">
             <LanguageToggle locale={locale} dark />
           </span>
@@ -56,6 +59,9 @@ export default function Header({ locale }: { locale: Locale }) {
           </a>
           <a href="/#cta" onClick={() => setIsMenuOpen(false)}>
             {t.contact}
+          </a>
+          <a href="/portal/login" onClick={() => setIsMenuOpen(false)}>
+            {t.clientPortal}
           </a>
           <div className="mobile-nav-lang">
             <LanguageToggle locale={locale} dark />

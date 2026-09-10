@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { Space_Grotesk, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import { getLocale } from "@/lib/i18n/server";
+import AuthHashRedirect from "@/components/AuthHashRedirect";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -67,6 +68,7 @@ export default function RootLayout({
             </Script>
           </>
         )}
+        <AuthHashRedirect />
         {children}
       </body>
     </html>
