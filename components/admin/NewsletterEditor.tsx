@@ -19,7 +19,15 @@ export default function NewsletterEditor({ content, onChange }: { content: strin
       Underline,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       Link.configure({ openOnClick: false, autolink: false }),
-      LinkableImage.configure({ inline: false }),
+      LinkableImage.configure({
+        inline: false,
+        resize: {
+          enabled: true,
+          directions: ["top-left", "top-right", "bottom-left", "bottom-right"],
+          minWidth: 40,
+          alwaysPreserveAspectRatio: true,
+        },
+      }),
     ],
     content,
     onUpdate: ({ editor }) => onChange(editor.getHTML()),
@@ -48,6 +56,26 @@ export default function NewsletterEditor({ content, onChange }: { content: strin
     const url = window.prompt("Image link URL (leave blank to remove)", current || "https://");
     if (url === null) return;
     editor.chain().focus().updateAttributes("image", { href: url || null }).run();
+  }
+
+  function setAlign(align: "left" | "center" | "right") {
+    if (!editor) return;
+    // The same three buttons double as image alignment when an image is
+    // selected — plain TipTap images are leaf nodes with no inline content
+    // of their own for a generic text-align extension to align, so this
+    // extension carries its own `align` attribute instead (see
+    // LinkableImageExtension.ts).
+    if (editor.isActive("image")) {
+      editor.chain().focus().updateAttributes("image", { align }).run();
+    } else {
+      editor.chain().focus().setTextAlign(align).run();
+    }
+  }
+
+  function isAlignActive(align: "left" | "center" | "right") {
+    if (!editor) return false;
+    if (editor.isActive("image")) return (editor.getAttributes("image").align || "left") === align;
+    return editor.isActive({ textAlign: align });
   }
 
   function handleImageButtonClick() {
@@ -121,28 +149,13 @@ export default function NewsletterEditor({ content, onChange }: { content: strin
           1. List
         </button>
         <span className="newsletter-editor-divider" />
-        <button
-          type="button"
-          className={editor.isActive({ textAlign: "left" }) ? "active" : ""}
-          onClick={() => editor.chain().focus().setTextAlign("left").run()}
-          title="Align left"
-        >
+        <button type="button" className={isAlignActive("left") ? "active" : ""} onClick={() => setAlign("left")} title="Align left">
           ⟵
         </button>
-        <button
-          type="button"
-          className={editor.isActive({ textAlign: "center" }) ? "active" : ""}
-          onClick={() => editor.chain().focus().setTextAlign("center").run()}
-          title="Align center"
-        >
+        <button type="button" className={isAlignActive("center") ? "active" : ""} onClick={() => setAlign("center")} title="Align center">
           ↔
         </button>
-        <button
-          type="button"
-          className={editor.isActive({ textAlign: "right" }) ? "active" : ""}
-          onClick={() => editor.chain().focus().setTextAlign("right").run()}
-          title="Align right"
-        >
+        <button type="button" className={isAlignActive("right") ? "active" : ""} onClick={() => setAlign("right")} title="Align right">
           ⟶
         </button>
         <span className="newsletter-editor-divider" />
@@ -158,6 +171,12 @@ export default function NewsletterEditor({ content, onChange }: { content: strin
           </button>
         )}
       </div>
+      {editor.isActive("image") && (
+        <p className="newsletter-editor-hint">
+          Drag a corner to resize. Alignment applies to the sent email even though this preview doesn&rsquo;t shift the
+          image — use &ldquo;Send test&rdquo; to see the true result.
+        </p>
+      )}
       <EditorContent editor={editor} />
       <input ref={fileInputRef} type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden onChange={handleFileChange} />
     </div>
