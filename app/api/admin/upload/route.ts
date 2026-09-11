@@ -19,6 +19,8 @@ export async function POST(req: NextRequest) {
 
   const formData = await req.formData();
   const file = formData.get("file");
+  const folderRaw = formData.get("folder");
+  const folder = typeof folderRaw === "string" && /^[a-z-]+$/.test(folderRaw) ? folderRaw : "posts";
 
   if (!(file instanceof File)) {
     return NextResponse.json({ ok: false, error: "No file provided." }, { status: 400 });
@@ -32,7 +34,7 @@ export async function POST(req: NextRequest) {
 
   const ext = file.type.split("/")[1];
   const randomSuffix = Math.random().toString(36).slice(2, 8);
-  const path = `posts/${Date.now()}-${randomSuffix}.${ext}`;
+  const path = `${folder}/${Date.now()}-${randomSuffix}.${ext}`;
 
   const admin = getSupabaseAdmin();
   const arrayBuffer = await file.arrayBuffer();

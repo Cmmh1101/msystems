@@ -1,8 +1,10 @@
-import { getDictionary } from "@/lib/i18n/server";
+import { getDictionary, getLocale } from "@/lib/i18n/server";
+import NewsletterSignup from "./NewsletterSignup";
 
 export default function Footer() {
   const year = new Date().getFullYear();
-  const t = getDictionary().footer;
+  const locale = getLocale();
+  const t = getDictionary(locale).footer;
 
   return (
     <footer className="site-footer">
@@ -19,6 +21,7 @@ export default function Footer() {
           <a href="/diagnostic">{t.freeCheck}</a>
           <a href="/#cta">{t.contact}</a>
         </nav>
+        <NewsletterSignup locale={locale} />
         <span className="footer-fine">
           © {year} {t.copyright}
         </span>

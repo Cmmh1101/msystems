@@ -164,6 +164,13 @@ const en = {
     teaserHeading: "Real systems, real results",
     seeAll: "See all results →",
   },
+  newsletter: {
+    heading: "Get occasional notes on systems and automation",
+    placeholder: "you@company.com",
+    button: "Subscribe",
+    success: "You're subscribed — thanks!",
+    error: "Something went wrong. Please try again.",
+  },
 };
 
 const es: typeof en = {
@@ -327,6 +334,13 @@ const es: typeof en = {
     backToResults: "← Volver a resultados",
     teaserHeading: "Sistemas reales, resultados reales",
     seeAll: "Ver todos los resultados →",
+  },
+  newsletter: {
+    heading: "Recibe notas ocasionales sobre sistemas y automatización",
+    placeholder: "tu@empresa.com",
+    button: "Suscribirse",
+    success: "Ya estás suscrito — ¡gracias!",
+    error: "Algo salió mal. Por favor intenta de nuevo.",
   },
 };
 

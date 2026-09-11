@@ -8,6 +8,7 @@ export interface Client {
   email: string;
   status: string; // active | paused | offboarded
   locale: string; // en | es
+  subscribed: boolean;
 }
 
 export interface Project {

@@ -33,10 +33,13 @@ export async function GET(req: NextRequest) {
 
   try {
     const supabase = getSupabaseAdmin();
-    const { error } = await supabase.from("contacts").update({ subscribed: false }).eq("email", email);
+    const [{ error: contactError }, { error: clientError }] = await Promise.all([
+      supabase.from("contacts").update({ subscribed: false }).eq("email", email),
+      supabase.from("clients").update({ subscribed: false }).eq("email", email),
+    ]);
 
-    if (error) {
-      console.error("unsubscribe: update failed", error);
+    if (contactError || clientError) {
+      console.error("unsubscribe: update failed", contactError || clientError);
       return new NextResponse(page("Something went wrong", "Please try again in a moment, or email us directly."), {
         status: 500,
         headers: { "Content-Type": "text/html" },
