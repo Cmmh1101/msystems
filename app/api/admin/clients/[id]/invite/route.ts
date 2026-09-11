@@ -33,7 +33,7 @@ Carla`,
   },
 };
 
-export async function POST(_req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   if (!(await requireAdmin())) {
     return NextResponse.json({ ok: false, error: "Not authorized." }, { status: 401 });
   }
@@ -72,12 +72,10 @@ export async function POST(_req: NextRequest, { params }: { params: { id: string
     }
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://inmotionwebsolutions.com";
-
   const { data: linkData, error: linkError } = await admin.auth.admin.generateLink({
     type: "magiclink",
     email: client.email,
-    options: { redirectTo: `${siteUrl}/portal/auth/callback` },
+    options: { redirectTo: new URL("/portal/auth/callback", req.url).toString() },
   });
 
   if (linkError || !linkData) {

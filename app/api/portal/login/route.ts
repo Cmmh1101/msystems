@@ -37,12 +37,10 @@ export async function POST(req: NextRequest) {
     .maybeSingle();
 
   if (client && client.auth_user_id) {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://inmotionwebsolutions.com";
-
     const { data: linkData, error: linkError } = await admin.auth.admin.generateLink({
       type: "magiclink",
       email,
-      options: { redirectTo: `${siteUrl}/portal/auth/callback` },
+      options: { redirectTo: new URL("/portal/auth/callback", req.url).toString() },
     });
 
     if (!linkError && linkData) {

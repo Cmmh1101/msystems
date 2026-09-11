@@ -40,7 +40,7 @@ Next.js MVP for Montano Systems, the new public brand of **In Motion Web Solutio
 
 | Variable | Purpose |
 |---|---|
-| `NEXT_PUBLIC_SITE_URL` | Public site URL, `https://inmotionwebsolutions.com` — domain does not change with the rebrand |
+| `NEXT_PUBLIC_SITE_URL` | Public site URL, `https://inmotionwebsolutions.com` — domain does not change with the rebrand. Only used for the root layout's `metadataBase`/OG tags, which should always describe the canonical domain regardless of what URL is actually being browsed. Every other place that used to build links from this (portal login/invite/logout, the Stripe quote redirect, the diagnostic email) now derives the origin from the incoming request instead — otherwise, while `inmotionwebsolutions.com` still points at the old WordPress/SiteGround hosting during the Moxie cutover, every one of those emailed or redirected links would silently point at the wrong domain no matter which URL a real visitor or client actually used |
 | `SUPABASE_URL` | Supabase project URL |
 | `SUPABASE_SERVICE_ROLE_KEY` | Server-only Supabase key, used in `/api/contact` — never expose to the client |
 | `RESEND_API_KEY` | Resend API key — must be **Full access** permission, not "Sending access". A restricted sending-only key can send emails but 401s on any Audiences/Contacts call |

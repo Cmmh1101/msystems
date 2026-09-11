@@ -33,8 +33,6 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     return NextResponse.json({ ok: false, error: "Ticket not found." }, { status: 404 });
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://inmotionwebsolutions.com";
-
   try {
     const stripe = getStripe();
     const session = await stripe.checkout.sessions.create({
@@ -49,8 +47,8 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
           quantity: 1,
         },
       ],
-      success_url: `${siteUrl}/portal/projects/${ticket.project_id}?payment=success`,
-      cancel_url: `${siteUrl}/portal/projects/${ticket.project_id}?payment=cancelled`,
+      success_url: new URL(`/portal/projects/${ticket.project_id}?payment=success`, req.url).toString(),
+      cancel_url: new URL(`/portal/projects/${ticket.project_id}?payment=cancelled`, req.url).toString(),
       metadata: { ticket_id: ticket.id },
     });
 

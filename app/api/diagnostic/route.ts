@@ -144,8 +144,7 @@ export async function POST(req: NextRequest) {
   try {
     const resend = getResend();
     const fromEmail = process.env.FROM_EMAIL!;
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://inmotionwebsolutions.com";
-    const unsubscribeUrl = `${siteUrl}/api/unsubscribe?email=${encodeURIComponent(email)}`;
+    const unsubscribeUrl = new URL(`/api/unsubscribe?email=${encodeURIComponent(email)}`, req.url).toString();
     const strings = EMAIL_STRINGS[locale];
 
     const emailResult = await resend.emails.send({
@@ -158,7 +157,7 @@ export async function POST(req: NextRequest) {
         tierLabel,
         summary: tier.summary[locale],
         recommendation: tier.recommendation[locale],
-        ctaUrl: `${siteUrl}/#cta`,
+        ctaUrl: new URL("/#cta", req.url).toString(),
         unsubscribeUrl,
       }),
     });
