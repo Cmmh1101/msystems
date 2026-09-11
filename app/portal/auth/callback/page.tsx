@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import "../../portal.css";
@@ -8,8 +8,15 @@ import "../../portal.css";
 export default function PortalAuthCallbackPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const ranRef = useRef(false);
 
   useEffect(() => {
+    // OAuth codes and magic-link tokens are single-use — guard against this
+    // effect ever running the exchange twice (e.g. a re-render or a dev-mode
+    // double-invoke), which would make the second attempt fail for real.
+    if (ranRef.current) return;
+    ranRef.current = true;
+
     async function run() {
       try {
         const supabase = getSupabaseBrowser();
@@ -38,7 +45,7 @@ export default function PortalAuthCallbackPage() {
 
         if (sessionError) {
           console.error("portal callback: session error", sessionError);
-          setError("That link is no longer valid.");
+          setError(`That link is no longer valid. (${sessionError.message})`);
           return;
         }
 
