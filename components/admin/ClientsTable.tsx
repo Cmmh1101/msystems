@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import type { Client } from "@/lib/clients";
 import { CLIENT_STATUSES } from "@/lib/clients";
 
-type ClientRow = Client & { projectCount: number };
+type ClientRow = Client & { projectCount: number; requestCount: number; todoCount: number; pendingBillingCount: number };
 
 export default function ClientsTable({ initialClients }: { initialClients: ClientRow[] }) {
   const [clients, setClients] = useState(initialClients);
@@ -68,6 +68,9 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
                 <th>Email</th>
                 <th>Company</th>
                 <th>Projects</th>
+                <th title="Client requests awaiting your review">Requests</th>
+                <th title="Tickets in To Do">To Do</th>
+                <th title="Awaiting a quote or payment">Pending</th>
                 <th>Status</th>
                 <th></th>
               </tr>
@@ -79,6 +82,9 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
                   <td className="muted">{c.email}</td>
                   <td className="muted">{c.company || "—"}</td>
                   <td className="muted">{c.projectCount}</td>
+                  <td>{c.requestCount > 0 ? <span className="admin-count-badge attention">{c.requestCount}</span> : <span className="muted">0</span>}</td>
+                  <td className="muted">{c.todoCount}</td>
+                  <td>{c.pendingBillingCount > 0 ? <span className="admin-count-badge attention">{c.pendingBillingCount}</span> : <span className="muted">0</span>}</td>
                   <td>
                     <select
                       className="admin-status-select"

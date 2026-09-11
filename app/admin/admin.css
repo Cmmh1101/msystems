@@ -265,6 +265,19 @@
   color: var(--graphite-soft);
 }
 
+.admin-count-badge {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  display: inline-block;
+}
+.admin-count-badge.attention {
+  background: rgba(184, 147, 90, 0.2);
+  color: var(--brass);
+}
+
 .admin-row-actions {
   display: flex;
   gap: 14px;
