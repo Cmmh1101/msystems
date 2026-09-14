@@ -52,6 +52,20 @@ export default async function AdminAnalyticsPage() {
                   );
                 })}
               </div>
+              <div className="admin-bar-chart-labels">
+                {data.dailySessions.map((d, i, arr) => {
+                  // Showing every date would crowd a 30-bar chart unreadably —
+                  // space labels out to roughly 6 across the range, always
+                  // including the first and last day.
+                  const interval = Math.max(1, Math.ceil(arr.length / 6));
+                  const show = i === 0 || i === arr.length - 1 || i % interval === 0;
+                  return (
+                    <span key={d.date} className="admin-bar-chart-label">
+                      {show ? d.date : ""}
+                    </span>
+                  );
+                })}
+              </div>
             </div>
           )}
 

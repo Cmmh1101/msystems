@@ -126,6 +126,11 @@ export default function NewsletterComposer() {
             {testSending ? "Sending…" : "Send test"}
           </button>
         </form>
+        {!canSend && (
+          <p className="admin-save-hint">
+            {subject.trim() ? "Write something in the body" : content.trim() ? "Add a subject" : "Add a subject and write something in the body"} to enable sending.
+          </p>
+        )}
         {testMessage && <p className="admin-save-hint">{testMessage}</p>}
       </div>
 
