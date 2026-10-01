@@ -463,18 +463,10 @@
     align-items: start;
   }
   .about-portrait {
+    position: relative;
     aspect-ratio: 4 / 5;
-    background: linear-gradient(160deg, var(--ink) 0%, var(--ink-2) 100%);
+    overflow: hidden;
     border: 1px solid rgba(15, 27, 45, 0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-mono);
-    color: var(--white-55);
-    font-size: 12px;
-    letter-spacing: 0.06em;
-    text-align: center;
-    padding: 20px;
   }
   .about h2 {
     color: var(--ink);
